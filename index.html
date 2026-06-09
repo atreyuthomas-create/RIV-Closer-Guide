@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RIV Closer Guide">
+<meta name="theme-color" content="#7B2FBE">
+<link rel="apple-touch-icon" href="app-touch-icon.png">
+<title>RIV Closer Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --orange:#7B2FBE;--bg:#0a0a0a;--card:#111;--border:#1e1e1e;
+  --item:#161616;--text:#fff;--dim:#888;--sub:#444;
+  --red:#FF3B30;--blue:#0A84FF;--green:#30D158;--purple:#BF5AF2;
+}
+html,body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overscroll-behavior:none}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .5s ease}
+#splash.hide{opacity:0;pointer-events:none}
+.splash-icon{width:120px;height:120px;background:#111;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #222;animation:popIn .6s cubic-bezier(.175,.885,.32,1.275) forwards;overflow:hidden;position:relative}
+.splash-icon::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--orange)}
+.splash-icon .s-riv{font-size:32px;font-weight:900;color:#fff;line-height:1;margin-top:8px}
+.splash-icon .s-closer{font-size:13px;font-weight:800;color:var(--orange);letter-spacing:.05em;line-height:1.2}
+.splash-icon .s-guide{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.05em}
+.splash-sub{font-size:11px;letter-spacing:.25em;color:rgba(255,255,255,.18);text-transform:uppercase;margin-top:18px;animation:fadeUp .6s .3s ease both}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ── REGION BANNER ── */
+.region-banner{background:#161616;border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.region-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0}
+.region-name{font-size:12px;font-weight:700;color:var(--orange);flex:1;letter-spacing:.04em}
+.region-change{font-size:11px;color:var(--dim);background:var(--border);border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--orange);padding:20px 20px 16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-top:calc(env(safe-area-inset-top,0px) + 20px)}
+.topbar-left .eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:3px}
+.topbar-left .t-title{font-size:22px;font-weight:900;color:#fff;line-height:1}
+.back-btn{background:rgba(255,255,255,.12);border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+
+/* ── HOME ── */
+.home-header{background:var(--orange);padding:calc(env(safe-area-inset-top,0px)+24px) 24px 24px;flex-shrink:0}
+.home-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
+.home-title{font-size:30px;font-weight:900;color:#fff;line-height:1}
+.home-tagline{font-size:13px;color:rgba(255,255,255,.5);margin-top:6px;font-weight:500}
+
+/* REGION SELECTOR on home */
+.region-selector{background:#111;border-bottom:1px solid var(--border);padding:14px 16px;flex-shrink:0}
+.rs-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px}
+.rs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rs-btn{background:var(--item);border:1.5px solid var(--border);border-radius:12px;padding:12px 10px;cursor:pointer;font-family:'Inter',sans-serif;text-align:left;transition:all .15s;display:flex;flex-direction:column;gap:3px}
+.rs-btn:active{transform:scale(.97)}
+.rs-btn.active{border-color:var(--orange);background:#1a0a2e}
+.rs-btn .rs-region{font-size:13px;font-weight:700;color:var(--dim)}
+.rs-btn.active .rs-region{color:#fff}
+.rs-btn .rs-utility{font-size:10px;font-weight:600;color:var(--sub);letter-spacing:.04em;text-transform:uppercase}
+.rs-btn.active .rs-utility{color:var(--orange)}
+.rs-btn .rs-installers{font-size:10px;color:var(--sub);margin-top:2px}
+.rs-btn.active .rs-installers{color:rgba(255,255,255,.4)}
+
+.home-body{flex:1;overflow-y:auto;padding:16px 16px calc(env(safe-area-inset-bottom,0px)+80px)}
+
+.mode-label{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin:20px 4px 10px;display:flex;align-items:center;gap:8px}
+.mode-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.mode-label.field{color:var(--orange)}
+.mode-label.training{color:var(--blue)}
+
+.nav-grid{display:flex;flex-direction:column;gap:10px}
+.nav-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .15s,transform .1s;text-decoration:none}
+.nav-card:active{transform:scale(.98)}
+.nav-card.field:hover{border-color:var(--orange)}
+.nav-card.training:hover{border-color:var(--blue)}
+.nav-card.coming{opacity:.4;cursor:default}
+.nav-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ni-orange{background:rgba(123,47,190,.12)}
+.ni-blue{background:rgba(10,132,255,.12)}
+.ni-green{background:rgba(48,209,88,.12)}
+.ni-purple{background:rgba(191,90,242,.12)}
+.ni-red{background:rgba(255,59,48,.12)}
+.nav-text{flex:1}
+.nav-title{font-size:15px;font-weight:700;color:#fff}
+.nav-desc{font-size:11px;color:var(--dim);margin-top:2px}
+.nav-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.04em;white-space:nowrap}
+.nb-live{background:rgba(48,209,88,.15);color:#30D158}
+.nb-soon{background:rgba(255,255,255,.06);color:#555}
+.nav-arrow{color:#333;font-size:18px;flex-shrink:0}
+
+/* ── SCREEN BODY ── */
+.screen-body{flex:1;overflow-y:auto;padding:16px 16px calc(env(safe-area-inset-bottom,0px)+90px)}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 calc(env(safe-area-inset-bottom,0px)+8px);display:flex;justify-content:space-around;z-index:100}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 14px;font-family:'Inter',sans-serif}
+.bnav-btn .bicon{font-size:20px}
+.bnav-btn .blabel{font-size:9px;font-weight:600;color:var(--sub);letter-spacing:.03em;text-transform:uppercase}
+.bnav-btn.active .blabel{color:var(--orange)}
+
+/* ── CHECKLIST ── */
+.counter-bar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.counter-bar-num{font-size:28px;font-weight:900;color:var(--orange)}
+.counter-bar-label{font-size:12px;color:var(--dim);font-weight:500}
+.reset-btn-sm{font-size:11px;color:#444;background:none;border:1px solid #2a2a2a;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:.05em;text-transform:uppercase;transition:all .15s}
+.reset-btn-sm:hover{border-color:var(--orange);color:var(--orange)}
+.checklist{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:flex-start;gap:14px;background:#161616;border:1.5px solid #2a2a2a;border-radius:14px;padding:18px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;user-select:none;-webkit-user-select:none}
+.item:active{transform:scale(.985)}
+.item:hover{border-color:var(--orange);background:#1e1e1e}
+.item.checked{border-color:var(--orange);background:#1a0a2e}
+.item.checked .box{background:var(--orange);border-color:var(--orange)}
+.item.checked .box::after{opacity:1;transform:rotate(45deg) translateY(-1px) scale(1)}
+.item.checked .item-label{color:#fff}
+.item.checked .item-sub{color:rgba(255,255,255,.45)}
+.box{width:26px;height:26px;border-radius:7px;border:2px solid #3a3a3a;background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative;margin-top:1px}
+.box::after{content:'';width:6px;height:11px;border-right:2.5px solid #000;border-bottom:2.5px solid #000;transform:rotate(45deg) translateY(-1px) scale(.7);opacity:0;transition:opacity .15s,transform .15s}
+.item-content{flex:1}
+.item-label{font-size:15px;font-weight:700;color:#aaa;transition:color .15s;line-height:1.2}
+.item-sub{font-size:12px;color:#555;margin-top:4px;font-weight:400;line-height:1.45;transition:color .15s}
+.all-clear{display:none;margin:8px 0 0;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:14px;padding:18px 20px;text-align:center;font-size:14px;font-weight:800;color:var(--orange);letter-spacing:.06em;text-transform:uppercase}
+@keyframes pulseIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── LANG BAR ── */
+.lang-bar{background:#161616;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lang-bar-label{font-size:11px;color:var(--dim);font-weight:600;letter-spacing:.05em;text-transform:uppercase;flex:1}
+.lang-toggle{display:flex;background:#111;border-radius:20px;padding:3px;gap:2px;border:1px solid var(--border)}
+.lang-btn{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;padding:5px 14px;border-radius:16px;border:none;cursor:pointer;transition:all .2s;background:transparent;color:#555}
+.lang-btn.active{background:var(--orange);color:#fff}
+
+/* ── PPA CARDS ── */
+.ppa-card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.ppa-hdr{background:#161616;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.ppa-name{font-size:16px;font-weight:800;color:#fff}
+.ppa-tag{font-size:11px;font-weight:600;color:var(--orange);background:rgba(123,47,190,.1);padding:4px 10px;border-radius:8px}
+.ppa-chev{color:#444;font-size:18px;transition:transform .2s;flex-shrink:0}
+.ppa-card.open .ppa-chev{transform:rotate(90deg)}
+.ppa-body{display:none;padding:0 18px 18px}
+.ppa-card.open .ppa-body{display:block}
+.ppa-row{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
+.ppa-row:last-child{border-bottom:none}
+.ppa-row strong{color:#fff}
+
+/* ── UTILITY RATES ── */
+.util-section{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.util-hdr{background:#161616;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.util-name{font-size:15px;font-weight:800;color:#fff}
+.util-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;letter-spacing:.04em}
+.ut-sce{background:rgba(255,59,48,.12);color:#FF3B30}
+.ut-pge{background:rgba(10,132,255,.12);color:#0A84FF}
+.ut-fpl{background:rgba(48,209,88,.12);color:#30D158}
+.ut-luma{background:rgba(191,90,242,.12);color:#BF5AF2}
+.ut-teco{background:rgba(255,159,10,.12);color:#FF9F0A}
+.util-chev{color:#444;font-size:18px;transition:transform .2s;flex-shrink:0}
+.util-section.open .util-chev{transform:rotate(90deg)}
+.util-body{display:none;padding:0 18px 18px}
+.util-section.open .util-body{display:block}
+.rate-plan{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:14px;margin-top:10px}
+.rate-plan-name{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px}
+.rate-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #222;font-size:12px}
+.rate-row:last-child{border-bottom:none}
+.rate-row .rk{color:var(--dim)}
+.rate-row .rv{font-weight:700;color:#fff}
+.rv.high{color:#FF3B30}
+.rv.low{color:#30D158}
+.util-note{font-size:11px;color:#444;margin-top:10px;line-height:1.5;font-style:italic}
+
+/* ── TESTIMONIALS ── */
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}
+.testi-quote{font-size:14px;color:#ccc;line-height:1.6;font-style:italic;margin-bottom:12px}
+.testi-quote::before{content:'"';font-size:24px;color:var(--orange);font-style:normal;line-height:1;display:block;margin-bottom:4px}
+.testi-meta{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#000;flex-shrink:0}
+.testi-info .testi-name{font-size:13px;font-weight:700;color:#fff}
+.testi-info .testi-region{font-size:11px;color:var(--dim)}
+.testi-stars{color:var(--orange);font-size:13px;margin-top:2px}
+.add-testi-btn{background:none;border:1.5px dashed #333;border-radius:14px;padding:18px;width:100%;text-align:center;cursor:pointer;font-family:'Inter',sans-serif;color:#444;font-size:13px;font-weight:600;transition:all .15s;margin-bottom:12px}
+.add-testi-btn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ── INSTALLS ── */
+.install-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.install-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer}
+.install-img{width:100%;aspect-ratio:4/3;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:28px;color:#333}
+.install-info{padding:10px 12px}
+.install-name{font-size:12px;font-weight:700;color:#fff}
+.install-detail{font-size:10px;color:var(--dim);margin-top:2px}
+.add-install-btn{background:none;border:1.5px dashed #333;border-radius:14px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:#444;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;transition:all .15s}
+.add-install-btn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ── SECTION CARD ── */
+.section-hdr{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#333;padding:14px 0 8px;display:flex;align-items:center;gap:8px}
+.section-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── COMING SOON ── */
+.coming-soon{background:var(--card);border:1px dashed #2a2a2a;border-radius:16px;padding:36px 20px;text-align:center;margin-bottom:12px}
+.cs-icon{font-size:32px;margin-bottom:10px}
+.cs-title{font-size:15px;font-weight:700;color:#333}
+.cs-sub{font-size:12px;color:#2a2a2a;margin-top:6px}
+
+/* ── REGION FILTER CHIP ── */
+.region-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(123,47,190,.1);border:1px solid rgba(123,47,190,.3);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--orange);margin-bottom:14px}
+
+/* LANDSCAPE */
+@media(min-width:700px) and (orientation:landscape){
+  .checklist{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .home-body,.screen-body{padding:16px 24px calc(env(safe-area-inset-bottom,0px)+80px)}
+  .rs-grid{grid-template-columns:repeat(4,1fr)}
+  .install-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ── SPLASH ── -->
+<div id="splash">
+  <div class="splash-icon">
+    <div class="s-riv">RIV</div>
+    <div class="s-closer">CLOSER</div>
+    <div class="s-guide">GUIDE</div>
+  </div>
+  <div class="splash-sub">Riv Solar · Field Tool</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="home-header">
+    <div class="home-eyebrow">RIV SOLAR — INTERNAL</div>
+    <div class="home-title">Closer Guide</div>
+    <div class="home-tagline">Your full field reference in one place.</div>
+  </div>
+
+  <!-- REGION SELECTOR -->
+  <div class="region-selector">
+    <div class="rs-label">Select Your Region</div>
+    <div class="rs-grid">
+      <button class="rs-btn active" id="rs-socal" onclick="setRegion('socal')">
+        <span class="rs-region">☀️ Southern CA</span>
+        <span class="rs-utility">SCE</span>
+        <span class="rs-installers">Empower · Exo · Better Earth</span>
+      </button>
+      <button class="rs-btn" id="rs-nocal" onclick="setRegion('nocal')">
+        <span class="rs-region">☁️ Northern CA</span>
+        <span class="rs-utility">PG&E</span>
+        <span class="rs-installers">Empower · Exo · Better Earth</span>
+      </button>
+      <button class="rs-btn" id="rs-florida" onclick="setRegion('florida')">
+        <span class="rs-region">🌴 Florida</span>
+        <span class="rs-utility">FPL / TECO</span>
+        <span class="rs-installers">Solaria</span>
+      </button>
+      <button class="rs-btn" id="rs-pr" onclick="setRegion('pr')">
+        <span class="rs-region">🇵🇷 Puerto Rico</span>
+        <span class="rs-utility">Luma</span>
+        <span class="rs-installers">Solaria</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="home-body">
+    <div class="mode-label field">🔴 In-Home Sales Tools</div>
+    <div class="nav-grid">
+      <div class="nav-card field" onclick="goTo('screen-eligibility')">
+        <div class="nav-icon ni-orange">🔍</div>
+        <div class="nav-text"><div class="nav-title">Eligibility Review</div><div class="nav-desc">6-point home qualification checklist</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-ppa')">
+        <div class="nav-icon ni-orange">📄</div>
+        <div class="nav-text"><div class="nav-title">PPA Summaries</div><div class="nav-desc">Goodleap · LightReach · EnFin — EN & ES</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-rates')">
+        <div class="nav-icon ni-orange">⚡</div>
+        <div class="nav-text"><div class="nav-title">Utility Rates</div><div class="nav-desc" id="home-rates-desc">SCE current rate schedules</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-credit')">
+        <div class="nav-icon ni-orange">💳</div>
+        <div class="nav-text"><div class="nav-title">Credit Requirements</div><div class="nav-desc">Min scores per financer — Better Earth</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-nuve')">
+        <div class="nav-icon ni-orange">🌿</div>
+        <div class="nav-text"><div class="nav-title">Nuve Incentive</div><div class="nav-desc">Free thermostat + energy report</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-phones')">
+        <div class="nav-icon ni-red">📞</div>
+        <div class="nav-text"><div class="nav-title">HVAC Scheduling #s</div><div class="nav-desc">Region-specific Nuve partner contacts</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-advisors')">
+        <div class="nav-icon ni-purple">🪪</div>
+        <div class="nav-text"><div class="nav-title">Energy Advisors</div><div class="nav-desc">Team directory — tap to view profile</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-testimonials')">
+        <div class="nav-icon ni-green">⭐</div>
+        <div class="nav-text"><div class="nav-title">Client Testimonials</div><div class="nav-desc">Real reviews from happy customers</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card field" onclick="goTo('screen-installs')">
+        <div class="nav-icon ni-green">🏠</div>
+        <div class="nav-text"><div class="nav-title">Client Installs</div><div class="nav-desc">Photo gallery of completed installs</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="mode-label training">📘 Closer Training Tools</div>
+    <div class="nav-grid">
+      <div class="nav-card training coming">
+        <div class="nav-icon ni-blue">🪜</div>
+        <div class="nav-text"><div class="nav-title">Sales Process</div><div class="nav-desc">Step-by-step closer flow</div></div>
+        <span class="nav-badge nb-soon">COMING</span>
+      </div>
+      <div class="nav-card training" onclick="goTo('screen-adders')">
+        <div class="nav-icon ni-blue">⚡</div>
+        <div class="nav-text"><div class="nav-title">Adder Sheets</div><div class="nav-desc" id="home-adders-desc">Better Earth · Solaria · Empower</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card training coming">
+        <div class="nav-icon ni-blue">💰</div>
+        <div class="nav-text"><div class="nav-title">Financer Options</div><div class="nav-desc">Loan, PPA, lease breakdowns</div></div>
+        <span class="nav-badge nb-soon">COMING</span>
+      </div>
+      <div class="nav-card training" onclick="goTo('screen-equipment')">
+        <div class="nav-icon ni-purple">🔧</div>
+        <div class="nav-text"><div class="nav-title">Equipment Eligibility</div><div class="nav-desc">Empower program requirements</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card training" onclick="goTo('screen-support')">
+        <div class="nav-icon ni-red">📞</div>
+        <div class="nav-text"><div class="nav-title">Support Contacts</div><div class="nav-desc">Empower installer support lines</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card training" onclick="goTo('screen-ahj')">
+        <div class="nav-icon ni-blue">🏛️</div>
+        <div class="nav-text"><div class="nav-title">Permit Timelines (AHJ)</div><div class="nav-desc">Better Earth — searchable by city</div></div>
+        <span class="nav-badge nb-live">LIVE</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-card training coming">
+        <div class="nav-icon ni-green">📸</div>
+        <div class="nav-text"><div class="nav-title">Customer Installations</div><div class="nav-desc">Before & after training examples</div></div>
+        <span class="nav-badge nb-soon">COMING</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ELIGIBILITY
+══════════════════════════════════════ -->
+<div class="screen" id="screen-eligibility">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="eyebrow">RIV — CPUC TOOL</div>
+      <div class="t-title">Eligibility Review</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="ebtn-en" onclick="setEligLang('en')">EN</button>
+        <button class="lang-btn" id="ebtn-es" onclick="setEligLang('es')">ES</button>
+      </div>
+    </div>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="elig-region-name">Southern California — SCE</div></div>
+  <div class="screen-body">
+    <div class="counter-bar">
+      <div><div class="counter-bar-num"><span id="ecount">0</span>/6</div><div class="counter-bar-label" id="ecount-label">Confirmed</div></div>
+      <button class="reset-btn-sm" id="ereset-btn" onclick="resetElig()">Reset</button>
+    </div>
+    <div class="checklist" id="elig-checklist">
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" data-en="Roof Condition" data-es="Condición del Techo">Roof Condition</div><div class="item-sub" data-en="Good condition, no major damage or need for replacement" data-es="Buen estado, sin daños mayores ni necesidad de reemplazo">Good condition, no major damage or need for replacement</div></div></div>
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" data-en="Electrical Box" data-es="Caja Eléctrica">Electrical Box</div><div class="item-sub" data-en="Panel is accessible and serviceable" data-es="El panel es accesible y está en condiciones de servicio">Panel is accessible and serviceable</div></div></div>
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" data-en="10 Homes in the Area" data-es="10 Casas en el Área">10 Homes in the Area</div><div class="item-sub" data-en="Typically the maximum amount of homes the program can fund at a time due to limited funding" data-es="Generalmente es el máximo de hogares que el programa puede financiar a la vez debido a fondos limitados">Typically the maximum amount of homes the program can fund at a time due to limited funding</div></div></div>
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" id="elig-utility-label" data-en="Edison (SCE Territory)" data-es="Edison (Territorio SCE)">Edison (SCE Territory)</div><div class="item-sub" data-en="Home is serviced by SCE & Have final say if home is selected" data-es="El hogar es atendido por SCE y tienen la decisión final si el hogar es seleccionado">Home is serviced by SCE &amp; Have final say if home is selected</div></div></div>
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" data-en="Homeowner Age 18+" data-es="Propietario Mayor de 18 Años">Homeowner Age 18+</div><div class="item-sub" data-en="Decision maker is the legal homeowner" data-es="El tomador de decisiones es el propietario legal del hogar">Decision maker is the legal homeowner</div></div></div>
+      <div class="item" onclick="toggleItem(this)"><div class="box"></div><div class="item-content"><div class="item-label" data-en="Good Credit" data-es="Buen Crédito">Good Credit</div><div class="item-sub" data-en="Meets minimum requirement" data-es="Cumple con el requisito mínimo">Meets minimum requirement</div></div></div>
+    </div>
+    <div class="all-clear" id="eAllClear">✓ Homie is Eligible — Proceed for a Site Survey</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PPA SUMMARIES
+══════════════════════════════════════ -->
+<div class="screen" id="screen-ppa">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">FINANCERS</div><div class="t-title">PPA Summaries</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="lang-bar">
+    <span class="lang-bar-label">Language</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="pbtn-en" onclick="setPPALang('en')">EN</button>
+      <button class="lang-btn" id="pbtn-es" onclick="setPPALang('es')">ES</button>
+    </div>
+  </div>
+  <div class="screen-body">
+    <!-- GOODLEAP -->
+    <div class="ppa-card" id="ppa-gl"><div class="ppa-hdr" onclick="togglePPA('ppa-gl')"><div class="ppa-name">Goodleap</div><div style="display:flex;align-items:center;gap:8px"><span class="ppa-tag">PPA</span><span class="ppa-chev">›</span></div></div>
+    <div class="ppa-body">
+      <div class="ppa-row" data-en="<strong>Down Payment:</strong> $0" data-es="<strong>Pago Inicial:</strong> $0"><strong>Down Payment:</strong> $0</div>
+      <div class="ppa-row" data-en="<strong>Rate Increase:</strong> Capped at 3.5% once per year" data-es="<strong>Aumento de Tarifa:</strong> Máximo 3.5% una vez al año"><strong>Rate Increase:</strong> Capped at 3.5% once per year</div>
+      <div class="ppa-row" data-en="<strong>Term:</strong> 25 years" data-es="<strong>Plazo:</strong> 25 años"><strong>Term:</strong> 25 years</div>
+      <div class="ppa-row" data-en="<strong>Lien on Home:</strong> None" data-es="<strong>Gravamen:</strong> Ninguno"><strong>Lien on Home:</strong> None</div>
+      <div class="ppa-row" data-en="<strong>End of Term:</strong> Remove free, renew, or buy at a discount" data-es="<strong>Fin del Contrato:</strong> Retire gratis, renueve, o compre con descuento"><strong>End of Term:</strong> Remove free, renew, or buy at a discount</div>
+      <div class="ppa-row" data-en="<strong>Warranty:</strong> Full 25-year system coverage" data-es="<strong>Garantía:</strong> Cobertura completa del sistema por 25 años"><strong>Warranty:</strong> Full 25-year system coverage</div>
+      <div class="ppa-row" data-en="<strong>Roof Warranty:</strong> 10 years — penetration & workmanship" data-es="<strong>Garantía de Techo:</strong> 10 años — penetración y mano de obra"><strong>Roof Warranty:</strong> 10 years — penetration &amp; workmanship</div>
+      <div class="ppa-row" data-en="<strong>Production Guarantee:</strong> 90% — reimbursed if below" data-es="<strong>Garantía de Producción:</strong> 90% — reembolso si está por debajo"><strong>Production Guarantee:</strong> 90% — reimbursed if below</div>
+      <div class="ppa-row" data-en="<strong>Battery:</strong> Backup power when grid goes down" data-es="<strong>Batería:</strong> Energía de respaldo cuando la red falla"><strong>Battery:</strong> Backup power when grid goes down</div>
+      <div class="ppa-row" data-en="<strong>Monitoring:</strong> Goodleap monitors + app available" data-es="<strong>Monitoreo:</strong> Goodleap monitorea + app disponible"><strong>Monitoring:</strong> Goodleap monitors + app available</div>
+      <div class="ppa-row" data-en="<strong>Home Sale:</strong> Transfers to new owner at no cost" data-es="<strong>Venta de Casa:</strong> Se transfiere al nuevo propietario sin costo"><strong>Home Sale:</strong> Transfers to new owner at no cost</div>
+      <div class="ppa-row" data-en="<strong>Insurance:</strong> Covered against damage/loss (not gross negligence)" data-es="<strong>Seguro:</strong> Cubierto contra daños/pérdidas (no negligencia grave)"><strong>Insurance:</strong> Covered against damage/loss (not gross negligence)</div>
+    </div></div>
+    <!-- LIGHTREACH -->
+    <div class="ppa-card" id="ppa-lr"><div class="ppa-hdr" onclick="togglePPA('ppa-lr')"><div class="ppa-name">Palmetto LightReach</div><div style="display:flex;align-items:center;gap:8px"><span class="ppa-tag">PPA</span><span class="ppa-chev">›</span></div></div>
+    <div class="ppa-body">
+      <div class="ppa-row" data-en="<strong>Down Payment:</strong> $0" data-es="<strong>Pago Inicial:</strong> $0"><strong>Down Payment:</strong> $0</div>
+      <div class="ppa-row" data-en="<strong>Rate Increase:</strong> Capped at 3.5% once per year" data-es="<strong>Aumento de Tarifa:</strong> Máximo 3.5% una vez al año"><strong>Rate Increase:</strong> Capped at 3.5% once per year</div>
+      <div class="ppa-row" data-en="<strong>Term:</strong> 25 years" data-es="<strong>Plazo:</strong> 25 años"><strong>Term:</strong> 25 years</div>
+      <div class="ppa-row" data-en="<strong>Lien on Home:</strong> None" data-es="<strong>Gravamen:</strong> Ninguno"><strong>Lien on Home:</strong> None</div>
+      <div class="ppa-row" data-en="<strong>End of Term:</strong> Remove free, renew, or buy at a discount" data-es="<strong>Fin del Contrato:</strong> Retire gratis, renueve, o compre con descuento"><strong>End of Term:</strong> Remove free, renew, or buy at a discount</div>
+      <div class="ppa-row" data-en="<strong>Warranty:</strong> Full 25-year system coverage" data-es="<strong>Garantía:</strong> Cobertura completa del sistema por 25 años"><strong>Warranty:</strong> Full 25-year system coverage</div>
+      <div class="ppa-row" data-en="<strong>Roof Warranty:</strong> 10 years — penetration & workmanship" data-es="<strong>Garantía de Techo:</strong> 10 años — penetración y mano de obra"><strong>Roof Warranty:</strong> 10 years — penetration &amp; workmanship</div>
+      <div class="ppa-row" data-en="<strong>Production Guarantee:</strong> 90% — reimbursed if below" data-es="<strong>Garantía de Producción:</strong> 90% — reembolso si está por debajo"><strong>Production Guarantee:</strong> 90% — reimbursed if below</div>
+      <div class="ppa-row" data-en="<strong>Battery:</strong> Backup power when grid goes down" data-es="<strong>Batería:</strong> Energía de respaldo cuando la red falla"><strong>Battery:</strong> Backup power when grid goes down</div>
+      <div class="ppa-row" data-en="<strong>Monitoring:</strong> Palmetto monitors + app available" data-es="<strong>Monitoreo:</strong> Palmetto monitorea + app disponible"><strong>Monitoring:</strong> Palmetto monitors + app available</div>
+      <div class="ppa-row" data-en="<strong>Home Sale:</strong> Transfers to new owner at no cost" data-es="<strong>Venta de Casa:</strong> Se transfiere al nuevo propietario sin costo"><strong>Home Sale:</strong> Transfers to new owner at no cost</div>
+      <div class="ppa-row" data-en="<strong>Insurance:</strong> Covered against damage/loss (not gross negligence)" data-es="<strong>Seguro:</strong> Cubierto contra daños/pérdidas (no negligencia grave)"><strong>Insurance:</strong> Covered against damage/loss (not gross negligence)</div>
+    </div></div>
+    <!-- ENFIN -->
+    <div class="ppa-card" id="ppa-ef"><div class="ppa-hdr" onclick="togglePPA('ppa-ef')"><div class="ppa-name">EnFin by Qcells</div><div style="display:flex;align-items:center;gap:8px"><span class="ppa-tag">PPA</span><span class="ppa-chev">›</span></div></div>
+    <div class="ppa-body">
+      <div class="ppa-row" data-en="<strong>Down Payment:</strong> $0" data-es="<strong>Pago Inicial:</strong> $0"><strong>Down Payment:</strong> $0</div>
+      <div class="ppa-row" data-en="<strong>Rate Increase:</strong> Never more than 3.5%" data-es="<strong>Aumento de Tarifa:</strong> Nunca más del 3.5%"><strong>Rate Increase:</strong> Never more than 3.5%</div>
+      <div class="ppa-row" data-en="<strong>Term:</strong> 25 years" data-es="<strong>Plazo:</strong> 25 años"><strong>Term:</strong> 25 years</div>
+      <div class="ppa-row" data-en="<strong>Lien on Home:</strong> None" data-es="<strong>Gravamen:</strong> Ninguno"><strong>Lien on Home:</strong> None</div>
+      <div class="ppa-row" data-en="<strong>End of Term:</strong> Remove free, renew, or buy at a discount" data-es="<strong>Fin del Contrato:</strong> Retire gratis, renueve, o compre con descuento"><strong>End of Term:</strong> Remove free, renew, or buy at a discount</div>
+      <div class="ppa-row" data-en="<strong>Warranty:</strong> Full 25-year system coverage" data-es="<strong>Garantía:</strong> Cobertura completa del sistema por 25 años"><strong>Warranty:</strong> Full 25-year system coverage</div>
+      <div class="ppa-row" data-en="<strong>Roof Warranty:</strong> 10 years — penetration & workmanship" data-es="<strong>Garantía de Techo:</strong> 10 años — penetración y mano de obra"><strong>Roof Warranty:</strong> 10 years — penetration &amp; workmanship</div>
+      <div class="ppa-row" data-en="<strong>Production Guarantee:</strong> 90% — reimbursed if below" data-es="<strong>Garantía de Producción:</strong> 90% — reembolso si está por debajo"><strong>Production Guarantee:</strong> 90% — reimbursed if below</div>
+      <div class="ppa-row" data-en="<strong>Battery:</strong> Backup power when grid goes down" data-es="<strong>Batería:</strong> Energía de respaldo cuando la red falla"><strong>Battery:</strong> Backup power when grid goes down</div>
+      <div class="ppa-row" data-en="<strong>Monitoring:</strong> EnFin monitors + app available" data-es="<strong>Monitoreo:</strong> EnFin monitorea + app disponible"><strong>Monitoring:</strong> EnFin monitors + app available</div>
+      <div class="ppa-row" data-en="<strong>Home Sale:</strong> Transfers to new owner — buyer must meet 630 credit min" data-es="<strong>Venta de Casa:</strong> Se transfiere — comprador debe tener crédito mínimo de 630"><strong>Home Sale:</strong> Transfers to new owner — buyer must meet 630 credit min</div>
+      <div class="ppa-row" data-en="<strong>Insurance:</strong> Covered against damage/loss (not gross negligence)" data-es="<strong>Seguro:</strong> Cubierto contra daños/pérdidas (no negligencia grave)"><strong>Insurance:</strong> Covered against damage/loss (not gross negligence)</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     UTILITY RATES
+══════════════════════════════════════ -->
+<div class="screen" id="screen-rates">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">UTILITY RATES</div><div class="t-title" id="rates-title">SCE Rates</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="rates-region-name">Southern California — SCE</div></div>
+  <div class="screen-body" id="rates-body"><!-- populated by JS --></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-testimonials">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">IN-HOME TOOLS</div><div class="t-title">Client Testimonials</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="testi-region-name">Southern California — SCE</div></div>
+  <div class="screen-body" id="testi-body">
+    <button class="add-testi-btn" onclick="alert('Photo & review upload coming soon!')">+ Add Client Testimonial</button>
+    <div id="testi-list"><!-- region-filtered testimonials --></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INSTALLS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-installs">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">IN-HOME TOOLS</div><div class="t-title">Client Installs</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="installs-region-name">Southern California — SCE</div></div>
+  <div class="screen-body">
+    <div class="install-grid">
+      <button class="add-install-btn" onclick="alert('Photo upload coming soon!')"><span style="font-size:24px">📷</span><span>Add Photo</span></button>
+    </div>
+    <div class="coming-soon"><div class="cs-icon">🏗️</div><div class="cs-title">Install Photos Coming Soon</div><div class="cs-sub">Tap "Add Photo" to start building your regional gallery</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NUVE INCENTIVE
+══════════════════════════════════════ -->
+<div class="screen" id="screen-nuve">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">IN-HOME TOOLS</div><div class="t-title">Nuve Incentive</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="screen-body">
+
+    <!-- HERO CARD -->
+    <div style="background:linear-gradient(135deg,#3d1278,#7B2FBE);border-radius:18px;padding:24px 20px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px;">LIMITED TIME OFFER</div>
+      <div style="font-size:28px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:4px;">EXCLUSIVE<br>UPGRADE</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:8px;">Included with every solar install</div>
+    </div>
+
+    <!-- WHAT THEY GET -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:14px;">What the Client Gets</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(123,47,190,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;">🌡️</div>
+          <div><div style="font-size:14px;font-weight:700;color:#fff;">Custom Nuve Thermostat</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Smart thermostat installed with every solar job</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(123,47,190,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;">📊</div>
+          <div><div style="font-size:14px;font-weight:700;color:#fff;">Full Energy Efficiency Report</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Personalized home energy audit included</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(48,209,88,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;">✅</div>
+          <div><div style="font-size:14px;font-weight:700;color:#fff;">No Money Out of Pocket</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Zero cost to the homeowner — fully included</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE CTA -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;">Schedule the Install</div>
+      <div style="font-size:13px;color:#bbb;line-height:1.6;margin-bottom:14px;">After closing the deal, call the HVAC partner for your region to schedule the Nuve thermostat installation. A live rep will find the next available time in the client's area.</div>
+      <button onclick="goTo('screen-phones')" style="width:100%;background:var(--orange);border:none;border-radius:12px;padding:14px;font-family:'Inter',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;letter-spacing:.04em;">📞 View HVAC Scheduling Numbers</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HVAC PHONE NUMBERS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-phones">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">NUVE — HVAC PARTNERS</div><div class="t-title">Scheduling #s</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="phones-region-name">Southern California — SCE</div></div>
+
+  <div class="screen-body">
+    <div style="font-size:12px;color:var(--dim);margin-bottom:16px;line-height:1.5;">Call the partner for your region. A live rep will check the schedule and book the next available time in the client's area.</div>
+
+    <div id="phones-list"><!-- rendered by JS --></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CREDIT REQUIREMENTS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-credit">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">BETTER EARTH — FINANCERS</div><div class="t-title">Credit Requirements</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="screen-body">
+
+    <!-- DISCLAIMER -->
+    <div style="background:rgba(123,47,190,.08);border:1px solid rgba(123,47,190,.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">
+      ⚠️ <strong style="color:rgba(255,255,255,.7);">Better Earth specific.</strong> Credit requirements vary by installer. These apply to Better Earth financer options only. Sunrun not included.
+    </div>
+
+    <!-- GOODLEAP TPO -->
+    <div class="ppa-card" id="cr-gl">
+      <div class="ppa-hdr" onclick="togglePPA('cr-gl')">
+        <div><div class="ppa-name">Goodleap <span style="font-size:12px;font-weight:600;color:var(--dim)">TPO · PPA/Lease</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(48,209,88,.12);color:#30D158;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA ONLY</span>
+          <span class="ppa-chev">›</span>
+        </div>
+      </div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Min Credit Score</strong> — 680+</div>
+        <div class="ppa-row"><strong>FICO Tier 1</strong> — 680+</div>
+        <div class="ppa-row"><strong>Initial Check</strong> — Soft pull (no hard inquiry)</div>
+        <div class="ppa-row"><strong>Bureau</strong> — Highest of 3 bureaus</div>
+        <div class="ppa-row"><strong>Credit Freeze</strong> — Unfreeze all 3 bureaus</div>
+        <div class="ppa-row"><strong>DTI</strong> — Not evaluated</div>
+        <div class="ppa-row"><strong>Non-US Citizen</strong> — Yes, SSN required (no ITIN)</div>
+        <div class="ppa-row"><strong>Co-Applicant</strong> — Allowed. Does NOT need to be on title or live in home. 1 borrower must be on title.</div>
+        <div class="ppa-row"><strong>Bankruptcies</strong> — Ch.13: discharged 1+ yr. All else: 2+ yrs</div>
+        <div class="ppa-row"><strong>Foreclosure</strong> — OK if 4+ years ago</div>
+        <div class="ppa-row"><strong>Credit Expires</strong> — 180 days. No extension.</div>
+        <div class="ppa-row"><strong>System Buyout</strong> — Anytime after year 5</div>
+        <div class="ppa-row"><strong>States</strong> — CA Only</div>
+        <div class="ppa-row"><strong>Apply Via</strong> — Aurora Proposal</div>
+        <div class="ppa-row"><strong>Spanish Agreement</strong> — ✅ Available</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Note</strong> — Must have HIS license in CA</div>
+      </div>
+    </div>
+
+    <!-- LIGHTREACH TPO -->
+    <div class="ppa-card" id="cr-lr">
+      <div class="ppa-hdr" onclick="togglePPA('cr-lr')">
+        <div><div class="ppa-name">Palmetto LightReach <span style="font-size:12px;font-weight:600;color:var(--dim)">TPO · PPA/Lease</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA & FL</span>
+          <span class="ppa-chev">›</span>
+        </div>
+      </div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Min Credit Score</strong> — 670 (CA) · 680 (FL)</div>
+        <div class="ppa-row"><strong>FICO Tier 1</strong> — 670+</div>
+        <div class="ppa-row"><strong>Initial Check</strong> — Soft pull (no hard inquiry)</div>
+        <div class="ppa-row"><strong>Bureau</strong> — Highest of 3 bureaus</div>
+        <div class="ppa-row"><strong>Credit Freeze</strong> — Unfreeze all 3 bureaus</div>
+        <div class="ppa-row"><strong>DTI</strong> — Not evaluated</div>
+        <div class="ppa-row"><strong>Non-US Citizen</strong> — Yes, SSN required (no ITIN)</div>
+        <div class="ppa-row"><strong>Co-Applicant</strong> — Must be immediate family. 1 must pass credit + title.</div>
+        <div class="ppa-row"><strong>Max System Cost</strong> — Below $150,000</div>
+        <div class="ppa-row"><strong>Bankruptcies</strong> — OK if 7+ years ago</div>
+        <div class="ppa-row"><strong>Foreclosure</strong> — OK if 7+ years ago</div>
+        <div class="ppa-row"><strong>Credit Expires</strong> — Does not expire. May cancel files after 160+ days without install.</div>
+        <div class="ppa-row"><strong>Extension</strong> — Yes. Up to 30–60 days. Max 1 extension.</div>
+        <div class="ppa-row"><strong>System Buyout</strong> — Anytime after year 5</div>
+        <div class="ppa-row"><strong>States</strong> — CA & FL</div>
+        <div class="ppa-row"><strong>Apply Via</strong> — Aurora Proposal</div>
+        <div class="ppa-row"><strong>Spanish Agreement</strong> — ✅ Available</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Note</strong> — Must be ReCheck Verified</div>
+      </div>
+    </div>
+
+    <!-- ENFIN TPO -->
+    <div class="ppa-card" id="cr-ef">
+      <div class="ppa-hdr" onclick="togglePPA('cr-ef')">
+        <div><div class="ppa-name">EnFin by Qcells <span style="font-size:12px;font-weight:600;color:var(--dim)">TPO · PPA/Lease</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA & FL</span>
+          <span class="ppa-chev">›</span>
+        </div>
+      </div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Min Credit Score</strong> — 620+</div>
+        <div class="ppa-row"><strong>FICO Tier 1</strong> — 620+</div>
+        <div class="ppa-row"><strong>Initial Check</strong> — Soft → Hard after NTP Approval</div>
+        <div class="ppa-row"><strong>Bureau</strong> — TransUnion</div>
+        <div class="ppa-row"><strong>Credit Freeze</strong> — Unfreeze TransUnion only</div>
+        <div class="ppa-row"><strong>DTI</strong> — Not evaluated</div>
+        <div class="ppa-row"><strong>Non-US Citizen</strong> — Yes, SSN required (no ITIN)</div>
+        <div class="ppa-row"><strong>Co-Applicant</strong> — Allowed. Does NOT need to be on title or live in home.</div>
+        <div class="ppa-row"><strong>Home Sale Transfer</strong> — New buyer must meet 630 credit min</div>
+        <div class="ppa-row"><strong>Bankruptcies</strong> — OK if 3+ years ago</div>
+        <div class="ppa-row"><strong>Foreclosure</strong> — OK if 3+ years ago</div>
+        <div class="ppa-row"><strong>Credit Expires</strong> — 180 days. No extension.</div>
+        <div class="ppa-row"><strong>System Buyout</strong> — At year 5 or year 25</div>
+        <div class="ppa-row"><strong>States</strong> — CA & FL</div>
+        <div class="ppa-row"><strong>Apply Via</strong> — Aurora Proposal</div>
+        <div class="ppa-row"><strong>Spanish Agreement</strong> — ❌ Not available</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Note</strong> — Must use QCell panels. Must be ReCheck Verified.</div>
+      </div>
+    </div>
+
+    <!-- SUNGAGE LOAN -->
+    <div class="ppa-card" id="cr-sg">
+      <div class="ppa-hdr" onclick="togglePPA('cr-sg')">
+        <div><div class="ppa-name">Sungage Financial <span style="font-size:12px;font-weight:600;color:var(--dim)">Loan</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA · FL · TX</span>
+          <span class="ppa-chev">›</span>
+        </div>
+      </div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Min Credit Score</strong> — 640+</div>
+        <div class="ppa-row"><strong>FICO Tiers</strong> — T1: 740+ · T2: 700–739 · T3: 640–699</div>
+        <div class="ppa-row"><strong>Initial Check</strong> — Soft → Hard after install</div>
+        <div class="ppa-row"><strong>Bureau</strong> — Experian</div>
+        <div class="ppa-row"><strong>Credit Freeze</strong> — Unfreeze Experian</div>
+        <div class="ppa-row"><strong>DTI</strong> — None if 700+. 65% max (680–699). 50% max (660–679). 40% max (640–659)</div>
+        <div class="ppa-row"><strong>Income Verification</strong> — Depends on credit. Required for self-employed.</div>
+        <div class="ppa-row"><strong>ITIN Accepted</strong> — ❌ No</div>
+        <div class="ppa-row"><strong>Co-Applicant</strong> — Yes. Both must live in home. One must be on deed.</div>
+        <div class="ppa-row"><strong>Loan Limits by Score</strong> — 740+: $100k+ · 700: $65k+ · 670–699: $50k+ · 640–659: $7,500–$50k</div>
+        <div class="ppa-row"><strong>Min Loan</strong> — $7,500 · Max Loan — $150,000</div>
+        <div class="ppa-row"><strong>PPW Cap</strong> — $5.75/w solar only (CA) · $4.75/w (FL)</div>
+        <div class="ppa-row"><strong>Bankruptcies</strong> — Must be cleared 2+ years</div>
+        <div class="ppa-row"><strong>Foreclosure</strong> — Must be cleared 2+ years</div>
+        <div class="ppa-row"><strong>Credit Expires</strong> — 180 days. No extension.</div>
+        <div class="ppa-row"><strong>First Payment</strong> — 60 days after install</div>
+        <div class="ppa-row"><strong>Pre-Payment Penalty</strong> — None if $2,500+. Fee if under $2,500.</div>
+        <div class="ppa-row"><strong>States</strong> — CA, FL, TX</div>
+        <div class="ppa-row"><strong>Spanish Agreement</strong> — ❌ Not available</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Note</strong> — Must have HIS in CA</div>
+      </div>
+    </div>
+
+    <!-- HOMERUN PACE -->
+    <div class="ppa-card" id="cr-hr">
+      <div class="ppa-hdr" onclick="togglePPA('cr-hr')">
+        <div><div class="ppa-name">HomeRun <span style="font-size:12px;font-weight:600;color:var(--dim)">PACE Financing</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA & FL</span>
+          <span class="ppa-chev">›</span>
+        </div>
+      </div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Min Credit Score</strong> — N/A (PACE — property-based, not credit-based)</div>
+        <div class="ppa-row"><strong>Initial Check</strong> — Soft pull (no hard inquiry)</div>
+        <div class="ppa-row"><strong>Bureau</strong> — TransUnion & Experian</div>
+        <div class="ppa-row"><strong>Credit Freeze</strong> — Unfreeze one of them</div>
+        <div class="ppa-row"><strong>ITIN Accepted</strong> — ✅ Yes</div>
+        <div class="ppa-row"><strong>DTI</strong> — Income must exceed known debts + payment</div>
+        <div class="ppa-row"><strong>Co-Applicant</strong> — Must be on title or occupying home</div>
+        <div class="ppa-row"><strong>Max Loan</strong> — $200,000</div>
+        <div class="ppa-row"><strong>PPW Cap</strong> — $6.25/w solar only · $10/w solar+battery · $7.50/w with ground mount & MPU. No reroofs.</div>
+        <div class="ppa-row"><strong>Bankruptcies</strong> — OK if discharged 2+ years (San Diego: 7+ years)</div>
+        <div class="ppa-row"><strong>Foreclosure</strong> — OK as long as no foreclosure on current home</div>
+        <div class="ppa-row"><strong>Payment</strong> — Through property tax</div>
+        <div class="ppa-row"><strong>First Payment</strong> — Dec (signed before 6/30) or following Dec (signed after 7/1)</div>
+        <div class="ppa-row"><strong>States</strong> — CA & FL</div>
+        <div class="ppa-row"><strong>Spanish Agreement</strong> — ✅ Available</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Note</strong> — Must have HIS in CA to sign contracts</div>
+      </div>
+    </div>
+
+    <!-- FREEZE NUMBERS -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:12px;">Credit Bureau Unfreeze Numbers</div>
+      <div class="ppa-row"><strong>Experian</strong> — (888) 397-3742</div>
+      <div class="ppa-row"><strong>Equifax</strong> — (888) 298-0045</div>
+      <div class="ppa-row" style="border-bottom:none;"><strong>TransUnion</strong> — (888) 909-8872</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SUPPORT CONTACTS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-support">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">INSTALLER SUPPORT</div><div class="t-title">Support Contacts</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="screen-body">
+
+    <!-- EMPOWER -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);padding:4px 0 10px;">Empower — All Lines: (800) 306-6953</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">🔔</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Sales Support</div>
+        </div>
+        <a href="tel:8003066953" style="display:block;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:17px;font-weight:900;color:var(--orange);">(800) 306-6953</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Option: 3 → 1 · Tap to call</div>
+        </a>
+        <a href="sms:5593795567" style="display:block;background:var(--item);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:700;color:#bbb;">Text: (559) 379-5567</div>
+        </a>
+        <div style="font-size:12px;color:var(--dim);line-height:1.6;">M–F: 9am – 5pm PST<br>Tag <span style="color:var(--orange);font-weight:700;">"@salessupport"</span> on Jobflo</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">📍</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Site Surveys</div>
+        </div>
+        <a href="tel:8003066953" style="display:block;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:17px;font-weight:900;color:var(--orange);">(800) 306-6953</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Option: 3 → 2 · Tap to call</div>
+        </a>
+        <div style="font-size:12px;color:var(--dim);line-height:1.6;">M–F: 9am – 9pm PST<br>Sa: 9am – 9pm PST</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">🔧</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Install Scheduling</div>
+        </div>
+        <a href="tel:8003066953" style="display:block;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:17px;font-weight:900;color:var(--orange);">(800) 306-6953</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Option: 3 → 3 · Tap to call</div>
+        </a>
+        <div style="font-size:12px;color:var(--dim);line-height:1.6;">M–F: 8am – 5pm PST<br>Sa: 9am – 4pm PST</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">✅</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Project Checklist</div>
+        </div>
+        <a href="tel:8003066953" style="display:block;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:17px;font-weight:900;color:var(--orange);">(800) 306-6953</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Option: 4 · Tap to call</div>
+        </a>
+        <div style="font-size:12px;color:var(--dim);line-height:1.6;">M–F: 8am – 7pm PST<br>Sa: 9am – 4pm PST</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">🤝</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Customer Care</div>
+        </div>
+        <a href="tel:8003066953" style="display:block;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <div style="font-size:17px;font-weight:900;color:var(--orange);">(800) 306-6953</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Business hours: Opt 2→1 · After hours emergency: Opt 2→2</div>
+        </a>
+        <div style="font-size:12px;color:var(--dim);line-height:1.6;">M: 8am – 6pm PST<br>T–Sa: 8am – 7pm PST</div>
+      </div>
+
+    </div>
+
+    <!-- MORE COMING -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);padding:4px 0 10px;margin-top:8px;">Better Earth — Support</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:18px;">🔔</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Sales Support</div>
+        </div>
+        <a href="tel:2134070553" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <span style="font-size:18px;">📞</span>
+          <div><div style="font-size:16px;font-weight:900;color:var(--orange);">(213) 407-0553</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Eric · Tap to call</div></div>
+        </a>
+        <a href="tel:9142247268" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;">
+          <span style="font-size:18px;">📞</span>
+          <div><div style="font-size:16px;font-weight:900;color:var(--orange);">(914) 224-7268</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Michelle · Tap to call</div></div>
+        </a>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:18px;">📋</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Project Management</div>
+        </div>
+        <a href="tel:7146811225" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <span style="font-size:18px;">📞</span>
+          <div><div style="font-size:16px;font-weight:900;color:var(--orange);">(714) 681-1225</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Tap to call</div></div>
+        </a>
+        <a href="mailto:PM@betterearth.solar" style="display:flex;align-items:center;gap:12px;background:var(--item);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-decoration:none;">
+          <span style="font-size:18px;">✉️</span>
+          <div style="font-size:13px;font-weight:600;color:#bbb;">PM@betterearth.solar</div>
+        </a>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:18px;">🤝</span>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Customer Support</div>
+        </div>
+        <a href="tel:8883739379" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;">
+          <span style="font-size:18px;">📞</span>
+          <div><div style="font-size:16px;font-weight:900;color:var(--orange);">(888) 373-9379</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Tap to call</div></div>
+        </a>
+        <a href="https://portal.betterearth.io" target="_blank" style="display:flex;align-items:center;gap:12px;background:var(--item);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-decoration:none;">
+          <span style="font-size:18px;">🌐</span>
+          <div style="font-size:13px;font-weight:600;color:#bbb;">portal.betterearth.io</div>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="coming-soon"><div class="cs-icon">🏗️</div><div class="cs-title">Exo · Solaria contacts coming soon</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EQUIPMENT ELIGIBILITY
+══════════════════════════════════════ -->
+<div class="screen" id="screen-equipment">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">TRAINING — EMPOWER</div><div class="t-title">Equipment Eligibility</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="screen-body">
+
+    <div style="background:rgba(123,47,190,.08);border:1px solid rgba(123,47,190,.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">
+      ⚠️ <strong style="color:rgba(255,255,255,.7);">Empower specific.</strong> Equipment requirements vary by financer and program. Active programs shown first.
+    </div>
+
+    <!-- PPAs -->
+    <div class="section-hdr" style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);padding:4px 0 10px;display:flex;align-items:center;gap:8px;">📄 PPA Programs<span style="flex:1;height:1px;background:var(--border);display:block;"></span></div>
+
+    <div class="ppa-card" id="eq-gl"><div class="ppa-hdr" onclick="togglePPA('eq-gl')">
+      <div><div class="ppa-name">Goodleap PPA <span style="font-size:11px;color:var(--green);font-weight:600;">✅ Active</span></div><div style="font-size:11px;color:var(--dim);margin-top:2px;">1st Systems · DC · Safe Harbor</div></div>
+      <span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Modules</strong> — QCell 430w</div>
+        <div class="ppa-row"><strong>Battery</strong> — Enphase 10c DOM</div>
+        <div class="ppa-row"><strong>Inverter</strong> — Enphase IQ8HC</div>
+        <div class="ppa-row"><strong>States</strong> — CA, TX</div>
+        <div class="ppa-row"><strong>Mounting</strong> — Roof</div>
+        <div class="ppa-row"><strong>Battery Mode</strong> — Backup + Time of Use/Arbitrage</div>
+        <div class="ppa-row"><strong>Add-on</strong> — No</div>
+        <div class="ppa-row"><strong>DC Eligible</strong> — Yes</div>
+        <div class="ppa-row"><strong>Version</strong> — 3.1 · Activated May 4, 2026</div>
+      </div>
+    </div>
+
+    <div class="ppa-card" id="eq-ef"><div class="ppa-hdr" onclick="togglePPA('eq-ef')">
+      <div><div class="ppa-name">EnFin PPA <span style="font-size:11px;color:var(--green);font-weight:600;">✅ Active</span></div><div style="font-size:11px;color:var(--dim);margin-top:2px;">First Systems Only</div></div>
+      <span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Modules</strong> — QCell 410w</div>
+        <div class="ppa-row"><strong>Battery</strong> — Tesla PW3</div>
+        <div class="ppa-row"><strong>Inverter</strong> — Enphase IQ8HC</div>
+        <div class="ppa-row"><strong>States</strong> — CA, TX, AZ</div>
+        <div class="ppa-row"><strong>Mounting</strong> — Roof</div>
+        <div class="ppa-row"><strong>Battery Mode</strong> — Backup</div>
+        <div class="ppa-row"><strong>Add-on</strong> — No</div>
+        <div class="ppa-row"><strong>DC Eligible</strong> — Yes</div>
+        <div class="ppa-row"><strong>Eligible Projects</strong> — Solar + Battery</div>
+        <div class="ppa-row"><strong>Version</strong> — 2 · Activated March 24, 2026</div>
+      </div>
+    </div>
+
+    <div class="ppa-card" id="eq-ef2"><div class="ppa-hdr" onclick="togglePPA('eq-ef2')">
+      <div><div class="ppa-name">EnFin PPA <span style="font-size:11px;color:var(--green);font-weight:600;">✅ Active</span></div><div style="font-size:11px;color:var(--dim);margin-top:2px;">Add Ons — NEM 3 customers only</div></div>
+      <span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Modules</strong> — QCell 410w</div>
+        <div class="ppa-row"><strong>Battery</strong> — Tesla PW3</div>
+        <div class="ppa-row"><strong>Inverter</strong> — Enphase IQ8HC</div>
+        <div class="ppa-row"><strong>Mounting</strong> — Roof</div>
+        <div class="ppa-row" style="color:#FF3B30;"><strong>⚠️ NEM 1 & 2 customers will be REJECTED</strong></div>
+      </div>
+    </div>
+
+    <div class="ppa-card" id="eq-lr"><div class="ppa-hdr" onclick="togglePPA('eq-lr')">
+      <div><div class="ppa-name">LightReach PPA <span style="font-size:11px;color:#FF3B30;font-weight:600;">⚠️ Inactive</span></div><div style="font-size:11px;color:var(--dim);margin-top:2px;">Backup Batteries (CA, TX) · DC</div></div>
+      <span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div class="ppa-row" style="color:#FF3B30;"><strong>Status</strong> — Inactive (March 30, 2026)</div>
+        <div class="ppa-row"><strong>Modules</strong> — Sirius 415w</div>
+        <div class="ppa-row"><strong>Battery</strong> — Tesla PW3</div>
+        <div class="ppa-row"><strong>Inverter</strong> — Enphase IQ8HC</div>
+        <div class="ppa-row"><strong>States</strong> — CA, TX</div>
+        <div class="ppa-row"><strong>Eligible Projects</strong> — Solar + Battery</div>
+        <div class="ppa-row"><strong>DC Eligible</strong> — Yes</div>
+      </div>
+    </div>
+
+    <!-- CASH -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);padding:16px 0 10px;display:flex;align-items:center;gap:8px;">💵 Cash Programs<span style="flex:1;height:1px;background:var(--border);display:block;"></span></div>
+
+    <div class="ppa-card" id="eq-cash"><div class="ppa-hdr" onclick="togglePPA('eq-cash')">
+      <div class="ppa-name">Cash Options</div><span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div class="ppa-row"><strong>Cash (Sirius)</strong> — Sirius 415w · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+        <div class="ppa-row"><strong>Cash (QCell)</strong> — QCell 410w · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+        <div class="ppa-row"><strong>Cash | Enphase</strong> — Sirius 415w · Enphase 10c D · Enphase IQ8HC · Roof/Ground</div>
+        <div class="ppa-row"><strong>TOU Cash · Non-export Add-on</strong> — Sirius 415w · Enphase 10c D · Enphase IQ8HC · Keeps NEM 2</div>
+        <div class="ppa-row"><strong>Backup Cash · Non-export (QCell)</strong> — QCell 410w · Tesla PW3 · Enphase IQ8HC · Keeps NEM 2</div>
+        <div class="ppa-row"><strong>Backup Cash · Non-export (Sirius)</strong> — Sirius 415w · Tesla PW3 · Enphase IQ8HC · Keeps NEM 2</div>
+        <div class="ppa-row"><strong>Cash | Retrofit</strong> — No panels · Tesla PW3 · Tesla inverter · Battery mount only</div>
+      </div>
+    </div>
+
+    <!-- LOANS -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);padding:16px 0 10px;display:flex;align-items:center;gap:8px;">🏦 Loan Programs<span style="flex:1;height:1px;background:var(--border);display:block;"></span></div>
+
+    <div class="ppa-card" id="eq-loans"><div class="ppa-hdr" onclick="togglePPA('eq-loans')">
+      <div class="ppa-name">Loan Options</div><span class="ppa-chev">›</span></div>
+      <div class="ppa-body">
+        <div style="font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Credit Human</div>
+        <div class="ppa-row"><strong>Solar & Battery Loan (Sirius)</strong> — Sirius 415w · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+        <div class="ppa-row"><strong>Solar & Battery Loan (QCell)</strong> — QCell 410w · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+        <div class="ppa-row"><strong>HDM Pre-Paid PPA</strong> — Sirius 415w · Enphase 10c D · Enphase IQ8HC · Prepaid · Roof</div>
+        <div style="font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 8px;">Dividend Financial</div>
+        <div class="ppa-row"><strong>Loan (Sirius)</strong> — Sirius 415w · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+        <div class="ppa-row"><strong>Loan (Aptos)</strong> — Aptos 41Xw · Tesla PW3 · Tesla inverter · Roof/Ground</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADDER SHEETS
+══════════════════════════════════════ -->
+<div class="screen" id="screen-adders">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">TRAINING — ADDERS</div><div class="t-title">Adder Sheets</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="adders-region-name">Southern California — SCE</div></div>
+  <div class="screen-body" id="adders-body"><!-- rendered by JS --></div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     AHJ PERMIT TIMELINES
+══════════════════════════════════════ -->
+<div class="screen" id="screen-ahj">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">BETTER EARTH — PERMITTING</div><div class="t-title">Permit Timelines</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div class="region-banner"><div class="region-dot"></div><div class="region-name" id="ahj-region-name">Southern California — SCE</div></div>
+
+  <!-- SEARCH BAR -->
+  <div style="background:#111;border-bottom:1px solid var(--border);padding:12px 16px;flex-shrink:0;">
+    <input type="text" id="ahj-search" placeholder="Search city or county..." oninput="filterAHJ()"
+      style="width:100%;background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:12px;padding:12px 16px;font-size:14px;color:#fff;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none;">
+  </div>
+
+  <!-- LEGEND -->
+  <div style="background:#111;border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-shrink:0;overflow-x:auto;">
+    <div style="display:flex;align-items:center;gap:5px;white-space:nowrap;"><span style="width:10px;height:10px;border-radius:50%;background:#30D158;flex-shrink:0;display:inline-block;"></span><span style="font-size:11px;color:var(--dim);">OTC / Instant</span></div>
+    <div style="display:flex;align-items:center;gap:5px;white-space:nowrap;"><span style="width:10px;height:10px;border-radius:50%;background:#F5A623;flex-shrink:0;display:inline-block;"></span><span style="font-size:11px;color:var(--dim);">5–15 days</span></div>
+    <div style="display:flex;align-items:center;gap:5px;white-space:nowrap;"><span style="width:10px;height:10px;border-radius:50%;background:#0A84FF;flex-shrink:0;display:inline-block;"></span><span style="font-size:11px;color:var(--dim);">20–30 days</span></div>
+    <div style="display:flex;align-items:center;gap:5px;white-space:nowrap;"><span style="width:10px;height:10px;border-radius:50%;background:#FF3B30;flex-shrink:0;display:inline-block;"></span><span style="font-size:11px;color:var(--dim);">30–90 days</span></div>
+  </div>
+
+  <div class="screen-body" style="padding-top:12px;" id="ahj-list"><!-- rendered by JS --></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ENERGY ADVISORS DIRECTORY
+══════════════════════════════════════ -->
+<div class="screen" id="screen-advisors">
+  <div class="topbar">
+    <div class="topbar-left"><div class="eyebrow">RIV SOLAR — MAMBA U</div><div class="t-title">Energy Advisors</div></div>
+    <button class="back-btn" onclick="goTo('screen-home')">← Home</button>
+  </div>
+  <div style="background:#111;border-bottom:1px solid var(--border);padding:12px 16px;flex-shrink:0;">
+    <input type="text" id="advisor-search" placeholder="Search by name..." oninput="filterAdvisors()"
+      style="width:100%;background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:12px;padding:12px 16px;font-size:14px;color:#fff;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none;">
+  </div>
+  <div class="screen-body" style="padding-top:12px;" id="advisor-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADVISOR PROFILE
+══════════════════════════════════════ -->
+<div class="screen" id="screen-profile">
+  <div class="topbar" style="padding-left:16px;">
+    <button class="back-btn" onclick="goTo('screen-advisors')" style="margin-right:8px;">← Directory</button>
+    <div style="flex:1;text-align:right;"><div class="eyebrow" style="color:rgba(255,255,255,.5);text-align:right;">RIV SOLAR</div></div>
+  </div>
+  <div class="screen-body" style="padding-top:0;" id="profile-body"></div>
+</div>
+
+<!-- ── BOTTOM NAV ── -->
+<div class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-home" onclick="goTo('screen-home')"><span class="bicon">🏠</span><span class="blabel">Home</span></button>
+  <button class="bnav-btn" id="bnav-eligibility" onclick="goTo('screen-eligibility')"><span class="bicon">🔍</span><span class="blabel">Eligibility</span></button>
+  <button class="bnav-btn" id="bnav-ppa" onclick="goTo('screen-ppa')"><span class="bicon">📄</span><span class="blabel">PPA</span></button>
+  <button class="bnav-btn" id="bnav-rates" onclick="goTo('screen-rates')"><span class="bicon">⚡</span><span class="blabel">Rates</span></button>
+  <button class="bnav-btn" id="bnav-testimonials" onclick="goTo('screen-testimonials')"><span class="bicon">⭐</span><span class="blabel">Reviews</span></button>
+</div>
+
+<script>
+// ── REGION DATA ──
+const REGIONS = {
+  socal:   { name:'Southern California — SCE', utility:'SCE',  installers:'Empower · Exo · Better Earth', utilityKey:'sce' },
+  nocal:   { name:'Northern California — PG&E', utility:'PG&E', installers:'Empower · Exo · Better Earth', utilityKey:'pge' },
+  florida: { name:'Florida — FPL / TECO',        utility:'FPL/TECO', installers:'Solaria', utilityKey:'florida' },
+  pr:      { name:'Puerto Rico — Luma',           utility:'Luma', installers:'Solaria', utilityKey:'luma' }
+};
+
+const RATE_DATA = {
+  sce: {
+    title: 'SCE Rates', tag: 'ut-sce',
+    plans: [
+      { name: 'TOU-D 4PM–9PM (Most Common)', rows:[
+        ['Base Service Charge','$0.79/day'],
+        ['Baseline Credit','$0.10/kWh'],
+        ['Summer On-Peak (4–9pm weekdays)','58¢/kWh','high'],
+        ['Summer Off-Peak','34¢/kWh','low'],
+        ['Summer Weekend Mid-Peak (4–9pm)','46¢/kWh'],
+        ['Winter Mid-Peak (4–9pm)','51¢/kWh'],
+        ['Winter Super Off-Peak (8am–4pm)','33¢/kWh','low'],
+        ['Winter Off-Peak','37¢/kWh'],
+      ]},
+      { name: 'TOU-D 5PM–8PM', rows:[
+        ['Base Service Charge','$0.79/day'],
+        ['Summer On-Peak (5–8pm weekdays)','74¢/kWh','high'],
+        ['Summer Off-Peak','34¢/kWh','low'],
+        ['Winter Mid-Peak (5–8pm)','60¢/kWh','high'],
+        ['Winter Super Off-Peak (8am–5pm)','32¢/kWh','low'],
+        ['Winter Off-Peak','38¢/kWh'],
+      ]},
+      { name: 'Tiered Rate (D-1)', rows:[
+        ['Tier 1 (up to baseline)','~25¢/kWh','low'],
+        ['Tier 2 (above baseline)','~35¢/kWh'],
+      ]},
+    ],
+    note: 'Rates effective 2025–2026. Solar customers must be on TOU-D-PRIME. Source: sce.com'
+  },
+  pge: {
+    title: 'PG&E Rates', tag: 'ut-pge',
+    plans: [
+      { name: 'Tiered Rate Plan (E-1)', rows:[
+        ['Tier 1 (up to 100% baseline)','33¢/kWh','low'],
+        ['Tier 2 (above baseline)','41¢/kWh'],
+      ]},
+      { name: 'Time-of-Use E-TOU-C (Peak 4–9pm daily)', rows:[
+        ['Summer Off-Peak','32¢/kWh','low'],
+        ['Summer On-Peak (4–9pm)','52¢/kWh','high'],
+        ['Winter Off-Peak','29¢/kWh','low'],
+        ['Winter On-Peak (4–9pm)','40¢/kWh'],
+      ]},
+      { name: 'Time-of-Use E-TOU-D (Peak 5–8pm weekdays)', rows:[
+        ['Summer Off-Peak','34¢/kWh','low'],
+        ['Summer On-Peak (5–8pm)','48¢/kWh','high'],
+        ['Winter Off-Peak','35¢/kWh','low'],
+        ['Winter On-Peak (5–8pm)','39¢/kWh'],
+      ]},
+      { name: 'Electric Home (E-ELEC)', rows:[
+        ['Summer Off-Peak (12am–3pm)','33¢/kWh','low'],
+        ['Summer Partial Peak (3–4pm & 9pm–12am)','39¢/kWh'],
+        ['Summer On-Peak (4–9pm)','55¢/kWh','high'],
+        ['Winter Off-Peak','28¢/kWh','low'],
+        ['Winter On-Peak (4–9pm)','32¢/kWh'],
+      ]},
+    ],
+    note: 'Effective March 1, 2026. Source: PG&E residential rate plan pricing PDF'
+  },
+  florida: {
+    title: 'FPL / TECO Rates', tag: 'ut-fpl',
+    plans: [
+      { name: 'FPL Residential Service (RS-1)', rows:[
+        ['Base Charge',  '$10.52/month'],
+        ['Energy ≤1,000 kWh','7.865¢/kWh','low'],
+        ['Energy >1,000 kWh','8.865¢/kWh'],
+        ['Fuel ≤1,000 kWh','2.893¢/kWh'],
+        ['Fuel >1,000 kWh','3.893¢/kWh'],
+        ['Conservation','0.148¢/kWh'],
+        ['Storm Protection','0.995¢/kWh'],
+        ['Environmental','0.345¢/kWh'],
+        ['Avg Total Rate (est.)','~14.5¢/kWh','low'],
+      ]},
+      { name: 'TECO Standard Residential (RS)', rows:[
+        ['Basic Service Charge','$0.45/day'],
+        ['Energy ≤1,000 kWh','9.569¢/kWh','low'],
+        ['Energy >1,000 kWh','10.569¢/kWh'],
+        ['Fuel ≤1,000 kWh','3.210¢/kWh'],
+        ['Fuel >1,000 kWh','4.210¢/kWh'],
+        ['Storm Protection','0.717¢/kWh'],
+        ['Avg Total Rate (est.)','~16.2¢/kWh'],
+      ]},
+    ],
+    note: 'FPL rates effective January 2026. TECO rates per published schedule. Source: FPL & Tampa Electric'
+  },
+  luma: {
+    title: 'Luma Rates (Puerto Rico)', tag: 'ut-luma',
+    plans: [
+      { name: 'Luma Residential Standard', rows:[
+        ['Avg Cost Per Day','$7.39'],
+        ['Avg Daily Usage','29 kWh'],
+        ['12-Month Avg Cost/kWh','$0.2628/kWh','high'],
+        ['Sample Bill (900 kWh)','$229.12'],
+        ['Billing Cycle','Monthly'],
+      ]},
+    ],
+    note: 'Based on sample Luma residential statement (900 kWh, Oct–Nov 2025). Average rate ~$0.26/kWh. Source: Luma Energy bill sample'
+  }
+};
+
+// ── HVAC PARTNER DATA ──
+const HVAC_PARTNERS = {
+  socal: {
+    name: '☀️ SoCal — RT HVAC (Mambas 🐍)',
+    phone: '951-291-1255',
+    email: 'Office@rtoplumbing.com',
+    address: '9064 Pulsar Court Ste. J\nCorona, CA 92883',
+    note: 'Call in — a live rep will find the next available time in your area.'
+  },
+  nocal: {
+    name: '☁️ NorCal — Cozy Home HVAC (Spartans 🛡️)',
+    phone: '707-200-8571',
+    email: 'Leads@cozyhvac.net',
+    address: '875 Cotting Ln Suite H\nVacaville, CA 95688',
+    note: 'Call in — a live rep will find the next available time in your area.'
+  },
+  florida: {
+    name: '🌴 Orlando — ABC HVAC (Playmaker 🎰)',
+    phone: '407-282-2280',
+    email: 'Info@abcairandheat.com',
+    address: '809 Eyrie Drive\nOviedo, FL 32765',
+    note: 'Call in — a live rep will find the next available time in your area.',
+    extra: {
+      name: '🌴 Tampa — Vinson Heating & Air (KultureU)',
+      phone: '727-816-9040',
+      email: 'info@vinsonair.com',
+      address: '31515 US-19 N\nPalm Harbor, FL 34684',
+    }
+  },
+  pr: null
+};
+
+function renderPhones() {
+  const rd = REGIONS[currentRegion];
+  document.getElementById('phones-region-name').textContent = rd.name;
+  const partner = HVAC_PARTNERS[currentRegion];
+  const container = document.getElementById('phones-list');
+
+  if (!partner) {
+    container.innerHTML = `<div class="coming-soon"><div class="cs-icon">📞</div><div class="cs-title">No HVAC partner listed for Puerto Rico yet</div><div class="cs-sub">Check back soon or contact your manager</div></div>`;
+    return;
+  }
+
+  function partnerCard(p) {
+    return `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:14px;">${p.name}</div>
+      <a href="tel:${p.phone.replace(/\D/g,'')}" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:12px;padding:14px 16px;text-decoration:none;margin-bottom:10px;">
+        <span style="font-size:22px;">📞</span>
+        <div><div style="font-size:18px;font-weight:900;color:var(--orange);letter-spacing:.04em;">${p.phone}</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Tap to call</div></div>
+      </a>
+      <a href="mailto:${p.email}" style="display:flex;align-items:center;gap:12px;background:var(--item);border:1px solid var(--border);border-radius:12px;padding:12px 16px;text-decoration:none;margin-bottom:10px;">
+        <span style="font-size:18px;">✉️</span>
+        <div style="font-size:13px;font-weight:600;color:#bbb;">${p.email}</div>
+      </a>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0 0;">
+        <span style="font-size:16px;flex-shrink:0;">📍</span>
+        <div style="font-size:12px;color:var(--dim);white-space:pre-line;">${p.address}</div>
+      </div>
+      ${p.note ? `<div style="margin-top:12px;background:rgba(123,47,190,.08);border:1px solid rgba(123,47,190,.2);border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;">🚨 ${p.note}</div>` : ''}
+    </div>`;
+  }
+
+  let html = partnerCard(partner);
+  if (partner.extra) html += partnerCard(partner.extra);
+  container.innerHTML = html;
+}
+
+
+const TESTIMONIALS = {
+  socal: [
+    { name:'Maria G.', initial:'M', region:'Southern California', stars:5, quote:'I was skeptical at first but they explained everything perfectly. My bill went from $380 to almost nothing. Best decision I ever made for my family.' },
+    { name:'Carlos R.', initial:'C', region:'Southern California', stars:5, quote:'The process was so smooth. Zero out of pocket, they handled everything with Edison, and my system was up in less than 2 months. Highly recommend.' },
+  ],
+  nocal: [
+    { name:'Jennifer L.', initial:'J', region:'Northern California', stars:5, quote:"PG&E rates were killing us. Now we're saving over $200 a month. The Riv team walked us through every step and never pressured us." },
+  ],
+  florida: [
+    { name:'David M.', initial:'D', region:'Florida', stars:5, quote:'Living in Tampa the electric bills are crazy in the summer. Solar cut my FPL bill by 80%. Solaria did a great job with the install.' },
+  ],
+  pr: [
+    { name:'Rosa T.', initial:'R', region:'Puerto Rico', stars:5, quote:'Con Luma los precios son muy altos. Ahora con solar mi factura bajó muchísimo y tengo batería para cuando hay apagones. Muy contenta con todo.' },
+  ]
+};
+
+// ── STATE ──
+let currentRegion = 'socal';
+let eligLang = 'en';
+let ppaLang = 'en';
+
+const SCREENS = ['screen-home','screen-eligibility','screen-ppa','screen-rates','screen-testimonials','screen-installs','screen-nuve','screen-phones','screen-credit','screen-support','screen-equipment','screen-adders','screen-ahj','screen-advisors','screen-profile'];
+const BNAV_MAP = {'screen-home':'bnav-home','screen-eligibility':'bnav-eligibility','screen-ppa':'bnav-ppa','screen-rates':'bnav-rates','screen-testimonials':'bnav-testimonials'};
+
+// ── NAVIGATION ──
+function goTo(id) {
+  SCREENS.forEach(s => document.getElementById(s).classList.toggle('active', s===id));
+  Object.keys(BNAV_MAP).forEach(s => {
+    const b = document.getElementById(BNAV_MAP[s]);
+    if(b) b.classList.toggle('active', s===id);
+  });
+  if(id==='screen-rates') renderRates();
+  if(id==='screen-testimonials') renderTestimonials();
+  if(id==='screen-phones') renderPhones();
+  if(id==='screen-ahj') renderAHJ();
+  if(id==='screen-adders') renderAdders();
+  if(id==='screen-advisors') renderAdvisorList();
+  window.scrollTo(0,0);
+}
+
+// ── REGION ──
+function setRegion(r) {
+  currentRegion = r;
+  Object.keys(REGIONS).forEach(k => document.getElementById('rs-'+k).classList.toggle('active', k===r));
+  const rd = REGIONS[r];
+  // Update region banners
+  ['elig-region-name','rates-region-name','testi-region-name','installs-region-name','phones-region-name','adders-region-name'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.textContent = rd.name;
+  });
+  // Update home desc
+  document.getElementById('home-rates-desc').textContent = rd.utility + ' current rate schedules';
+  const adDesc = document.getElementById('home-adders-desc');
+  if(adDesc) adDesc.textContent = rd.installers;
+  const instDesc = document.getElementById('home-installers-desc');
+  if(instDesc) instDesc.textContent = rd.installers;
+  // Update rates title
+  document.getElementById('rates-title').textContent = rd.utility + ' Rates';
+  // Update eligibility utility item
+  const utilLabel = document.getElementById('elig-utility-label');
+  if(r==='socal'){ utilLabel.setAttribute('data-en','Edison (SCE Territory)'); utilLabel.setAttribute('data-es','Edison (Territorio SCE)'); }
+  else if(r==='nocal'){ utilLabel.setAttribute('data-en','PG&E Territory'); utilLabel.setAttribute('data-es','Territorio PG&E'); }
+  else if(r==='florida'){ utilLabel.setAttribute('data-en','FPL / TECO Territory'); utilLabel.setAttribute('data-es','Territorio FPL / TECO'); }
+  else if(r==='pr'){ utilLabel.setAttribute('data-en','Luma Territory (Puerto Rico)'); utilLabel.setAttribute('data-es','Territorio Luma (Puerto Rico)'); }
+  utilLabel.textContent = utilLabel.getAttribute('data-'+eligLang);
+}
+
+// ── RATES ──
+function renderRates() {
+  const rd = REGIONS[currentRegion];
+  const data = RATE_DATA[rd.utilityKey];
+  let html = '';
+  data.plans.forEach(plan => {
+    html += `<div class="util-section"><div class="util-hdr" onclick="this.parentElement.classList.toggle('open')"><div class="util-name">${plan.name}</div><div style="display:flex;align-items:center;gap:8px"><span class="util-tag ${data.tag}">${rd.utility}</span><span class="util-chev">›</span></div></div><div class="util-body"><div class="rate-plan">`;
+    plan.rows.forEach(([k,v,cls])=>{
+      html += `<div class="rate-row"><span class="rk">${k}</span><span class="rv ${cls||''}">${v}</span></div>`;
+    });
+    html += `</div></div></div>`;
+  });
+  if(data.note) html += `<div class="util-note">${data.note}</div>`;
+  document.getElementById('rates-body').innerHTML = html;
+}
+
+// ── TESTIMONIALS ──
+function renderTestimonials() {
+  const list = TESTIMONIALS[currentRegion] || [];
+  const rd = REGIONS[currentRegion];
+  document.getElementById('testi-region-name').textContent = rd.name;
+  let html = '';
+  if(list.length === 0){
+    html = `<div class="coming-soon"><div class="cs-icon">⭐</div><div class="cs-title">No testimonials yet for this region</div><div class="cs-sub">Add the first one above!</div></div>`;
+  } else {
+    list.forEach(t => {
+      const stars = '★'.repeat(t.stars);
+      html += `<div class="testi-card"><div class="testi-quote">${t.quote}</div><div class="testi-meta"><div class="testi-avatar">${t.initial}</div><div class="testi-info"><div class="testi-name">${t.name}</div><div class="testi-region">${t.region}</div><div class="testi-stars">${stars}</div></div></div></div>`;
+    });
+  }
+  document.getElementById('testi-list').innerHTML = html;
+}
+
+// ── ELIGIBILITY ──
+const eligCopy = {
+  en:{ confirmed:'Confirmed', allClear:'✓ Homie is Eligible — Proceed for a Site Survey', reset:'Reset' },
+  es:{ confirmed:'Confirmados', allClear:'✓ El Hogar Califica — Proceder a una Inspección del Sitio', reset:'Reiniciar' }
+};
+function setEligLang(lang) {
+  eligLang = lang;
+  document.getElementById('ebtn-en').classList.toggle('active', lang==='en');
+  document.getElementById('ebtn-es').classList.toggle('active', lang==='es');
+  document.getElementById('ecount-label').textContent = eligCopy[lang].confirmed;
+  document.getElementById('ereset-btn').textContent = eligCopy[lang].reset;
+  document.querySelectorAll('#elig-checklist [data-en]').forEach(el => el.innerHTML = el.getAttribute('data-'+lang));
+  document.getElementById('eAllClear').textContent = eligCopy[lang].allClear;
+}
+function toggleItem(el){ el.classList.toggle('checked'); updateEligCount(); }
+function updateEligCount(){
+  const n = document.querySelectorAll('#elig-checklist .item.checked').length;
+  document.getElementById('ecount').textContent = n;
+  const ac = document.getElementById('eAllClear');
+  if(n===6){ ac.textContent=eligCopy[eligLang].allClear; ac.style.display='block'; ac.style.animation='none'; void ac.offsetWidth; ac.style.animation='pulseIn .4s cubic-bezier(.175,.885,.32,1.275)'; }
+  else{ ac.style.display='none'; }
+}
+function resetElig(){ document.querySelectorAll('#elig-checklist .item').forEach(el=>el.classList.remove('checked')); updateEligCount(); }
+
+// ── PPA ──
+function setPPALang(lang){
+  ppaLang = lang;
+  document.getElementById('pbtn-en').classList.toggle('active', lang==='en');
+  document.getElementById('pbtn-es').classList.toggle('active', lang==='es');
+  document.querySelectorAll('#screen-ppa [data-en]').forEach(el => el.innerHTML = el.getAttribute('data-'+lang));
+}
+function togglePPA(id){ document.getElementById(id).classList.toggle('open'); }
+
+// ── ADVISOR DATA ──
+const ADVISORS = [
+  { id:'buckland',  badge:'RIV-003', name:'Christopher Buckland', region:'SoCal', phone:'', email:'', clients:[], initials:'CB' },
+  { id:'tedford',   badge:'RIV-004', name:'Kyle Tedford',          region:'SoCal', phone:'', email:'', clients:[], initials:'KT' },
+  { id:'fuller',    badge:'RIV-005', name:'Andrew Fuller',          region:'SoCal', phone:'', email:'', clients:[], initials:'AF' },
+  { id:'atreyu',    badge:'RIV-006', name:'Atreyu Thomas',          region:'SoCal', phone:'', email:'', clients:[], initials:'AT' },
+  { id:'otumos',    badge:'RIV-007', name:'Otumos Payemanu',        region:'SoCal', phone:'', email:'', clients:[], initials:'OP' },
+  { id:'dario',     badge:'RIV-008', name:'Dario Contreras',        region:'SoCal', phone:'', email:'', clients:[], initials:'DC' },
+  { id:'daniel',    badge:'RIV-009', name:'Daniel Franco',          region:'SoCal', phone:'', email:'', clients:[], initials:'DF' },
+  { id:'edson',     badge:'RIV-010', name:'Edson Moreno',           region:'SoCal', phone:'', email:'', clients:[], initials:'EM' },
+  { id:'andrew',    badge:'RIV-011', name:'Andrew Kidwell',         region:'SoCal', phone:'', email:'', clients:[], initials:'AK' },
+  { id:'brandon',   badge:'RIV-012', name:'Brandon Marroquin',      region:'SoCal', phone:'', email:'', clients:[], initials:'BM' },
+  { id:'josh',      badge:'RIV-013', name:'Josh Montanez',          region:'SoCal', phone:'', email:'', clients:[], initials:'JM' },
+  { id:'kenneth',   badge:'RIV-014', name:'Kenneth Paz',            region:'SoCal', phone:'', email:'', clients:[], initials:'KP' },
+  { id:'esteban',   badge:'RIV-015', name:'Esteban Murillo',        region:'SoCal', phone:'', email:'', clients:[], initials:'ES' },
+  { id:'emanuel',   badge:'RIV-016', name:'Emanuel Magdaleno',      region:'SoCal', phone:'', email:'', clients:[], initials:'EG' },
+];
+
+const ADVISORS_SORTED = [...ADVISORS].sort((a,b) => a.name.localeCompare(b.name));
+
+function renderAdvisorList(filter='') {
+  let data = ADVISORS_SORTED;
+  if (filter) { const f = filter.toLowerCase(); data = data.filter(a => a.name.toLowerCase().includes(f)); }
+  if (!data.length) {
+    document.getElementById('advisor-list').innerHTML = `<div class="coming-soon"><div class="cs-icon">🔍</div><div class="cs-title">No advisors found</div></div>`;
+    return;
+  }
+  const grouped = {};
+  data.forEach(a => { const l = a.name[0].toUpperCase(); if (!grouped[l]) grouped[l]=[]; grouped[l].push(a); });
+  let html = '';
+  Object.keys(grouped).sort().forEach(letter => {
+    html += `<div style="font-size:11px;font-weight:800;letter-spacing:.18em;color:#444;text-transform:uppercase;padding:12px 4px 6px;">${letter}</div>`;
+    grouped[letter].forEach(a => {
+      html += `<div onclick="openProfile('${a.id}')" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3d1278,var(--orange));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;">${a.initials.substring(0,2)}</div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:700;color:#fff;">${a.name}</div>
+          <div style="font-size:11px;color:var(--dim);margin-top:2px;">${a.badge} · Energy Advisor · ${a.region}</div>
+        </div>
+        <span style="color:#333;font-size:20px;">›</span>
+      </div>`;
+    });
+  });
+  document.getElementById('advisor-list').innerHTML = html;
+}
+
+function filterAdvisors() { renderAdvisorList(document.getElementById('advisor-search').value); }
+
+function openProfile(id) {
+  const a = ADVISORS.find(x => x.id === id);
+  if (!a) return;
+  const hasPhone = !!a.phone;
+  const hasEmail = !!a.email;
+  const clientPhotos = a.clients && a.clients.length
+    ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">${a.clients.map(src=>`<div style="aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:#1a1a1a;"><img src="${src}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}</div>`
+    : `<div style="background:#1a1a1a;border:1px dashed #2a2a2a;border-radius:12px;padding:28px;text-align:center;margin-top:10px;color:#444;font-size:12px;font-weight:600;">Client photos coming soon</div>`;
+
+  document.getElementById('profile-body').innerHTML = `
+    <div style="background:linear-gradient(160deg,#1a0a2e 0%,#0a0a0a 60%);padding:32px 20px 24px;text-align:center;border-bottom:1px solid var(--border);">
+      <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#3d1278,var(--orange));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;margin:0 auto 14px;border:3px solid rgba(123,47,190,.4);">${a.initials.substring(0,2)}</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;">${a.name}</div>
+      <div style="font-size:13px;color:var(--orange);font-weight:700;margin-top:4px;">Energy Advisor · Riv Solar</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(123,47,190,.12);border:1px solid rgba(123,47,190,.3);border-radius:20px;padding:5px 14px;margin-top:10px;">
+        <span style="font-size:12px;color:#fff;font-weight:800;letter-spacing:.08em;">${a.badge}</span>
+      </div>
+      <div style="font-size:12px;color:var(--dim);margin-top:8px;">${a.region} · CSLB/HIS #132058</div>
+    </div>
+    <div style="padding:20px 16px;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:12px;">Contact</div>
+        ${hasPhone
+          ? `<a href="tel:${a.phone.replace(/\D/g,'')}" style="display:flex;align-items:center;gap:12px;background:#1a0a2e;border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;text-decoration:none;margin-bottom:8px;"><span style="font-size:18px;">📞</span><div><div style="font-size:15px;font-weight:900;color:var(--orange);">${a.phone}</div><div style="font-size:11px;color:rgba(255,255,255,.4);">Tap to call</div></div></a>`
+          : `<div style="background:#1a1a1a;border:1px dashed #2a2a2a;border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:12px;color:#444;text-align:center;">Phone — add to activate</div>`}
+        ${hasEmail
+          ? `<a href="mailto:${a.email}" style="display:flex;align-items:center;gap:12px;background:var(--item);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-decoration:none;"><span style="font-size:18px;">✉️</span><div style="font-size:13px;font-weight:600;color:#bbb;">${a.email}</div></a>`
+          : `<div style="background:#1a1a1a;border:1px dashed #2a2a2a;border-radius:10px;padding:12px 14px;font-size:12px;color:#444;text-align:center;">Email — add to activate</div>`}
+      </div>
+
+      <div style="background:linear-gradient(135deg,#1a0a2e,#0f0f0f);border:1px solid rgba(123,47,190,.35);border-radius:16px;padding:20px;margin-bottom:6px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+          <div>
+            <div style="font-size:18px;font-weight:900;color:#fff;line-height:1.2;">${a.name}</div>
+            <div style="font-size:11px;color:var(--orange);font-weight:700;margin-top:3px;">Energy Advisor · Riv Solar</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:2px;">${a.badge} · ${a.region}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:24px;font-weight:900;color:var(--orange);line-height:1;">RIV</div>
+            <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.12em;">SOLAR</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(123,47,190,.2);padding-top:12px;">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div style="font-size:12px;color:var(--dim);">📞 ${hasPhone ? a.phone : '—'}</div>
+            <div style="font-size:12px;color:var(--dim);">✉️ ${hasEmail ? a.email : '—'}</div>
+          </div>
+          <div style="font-size:10px;color:#2a2a2a;margin-top:8px;">CSLB/HIS #132058 · (213) 660-6514 · Info@RIVsolar.com</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#444;text-align:center;margin-bottom:16px;">📸 Screenshot card above to share your contact info</div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:4px;">Happy Clients</div>
+        ${clientPhotos}
+      </div>
+    </div>`;
+
+  goTo('screen-profile');
+}
+
+// ── ADDER SHEETS ──
+function renderAdders() {
+  const rd = REGIONS[currentRegion];
+  document.getElementById('adders-region-name').textContent = rd.name;
+
+  const isCal = currentRegion === 'socal' || currentRegion === 'nocal';
+  const isFL  = currentRegion === 'florida';
+  const isPR  = currentRegion === 'pr';
+
+  let html = '';
+
+  // SOLARIA — FL and PR only
+  if (isFL || isPR) {
+    html += `
+    <div class="ppa-card" id="add-solaria"><div class="ppa-hdr" onclick="togglePPA('add-solaria')">
+      <div><div class="ppa-name">Solaria</div><div style="font-size:11px;color:var(--dim);margin-top:2px;">${isPR ? 'Puerto Rico' : 'Florida'}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">${isPR ? 'PR' : 'FL'}</span><span class="ppa-chev">›</span></div></div>
+      <div class="ppa-body">
+        <div class="rate-plan"><div class="rate-plan-name">Roof Adders</div>
+          <div class="rate-row"><span class="rk">Tile Roof</span><span class="rv">$0.25/watt</span></div>
+          <div class="rate-row"><span class="rk">Metal Roof</span><span class="rv">$0.10/watt</span></div>
+          <div class="rate-row"><span class="rk">Flat Roof</span><span class="rv">$0.10/watt</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Electrical Adders</div>
+          <div class="rate-row"><span class="rk">Main Panel Upgrade</span><span class="rv">$2,500</span></div>
+          <div class="rate-row"><span class="rk">Trenching</span><span class="rv">$10/ft</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Other Adders</div>
+          <div class="rate-row"><span class="rk">Tier 2 Insurance</span><span class="rv">$790</span></div>
+          <div class="rate-row"><span class="rk">Small System (under 5kW)</span><span class="rv">$1,500</span></div>
+          ${isFL ? '<div class="rate-row"><span class="rk">South Florida Adder</span><span class="rv">$0.20/watt</span></div>' : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // BETTER EARTH — CA only
+  if (isCal) {
+    html += `
+    <div class="ppa-card" id="add-be"><div class="ppa-hdr" onclick="togglePPA('add-be')">
+      <div><div class="ppa-name">Better Earth</div><div style="font-size:11px;color:var(--dim);margin-top:2px;">California — Key adders</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="background:rgba(48,209,88,.12);color:#30D158;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA</span><span class="ppa-chev">›</span></div></div>
+      <div class="ppa-body">
+        <div class="rate-plan"><div class="rate-plan-name">Electrical</div>
+          <div class="rate-row"><span class="rk">MPU</span><span class="rv">$3,400</span></div>
+          <div class="rate-row"><span class="rk">Elective MPU</span><span class="rv">$5,000</span></div>
+          <div class="rate-row"><span class="rk">400A MPU</span><span class="rv">$5,000</span></div>
+          <div class="rate-row"><span class="rk">Subpanel</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Derate</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Line/Load Side Tap</span><span class="rv">$350</span></div>
+          <div class="rate-row"><span class="rk">Trenching (1st 50ft)</span><span class="rv">$1,100</span></div>
+          <div class="rate-row"><span class="rk">Trenching (after 50ft)</span><span class="rv">$18/ft</span></div>
+          <div class="rate-row"><span class="rk">Concrete/Asphalt Trench</span><span class="rv">$100/ft</span></div>
+          <div class="rate-row"><span class="rk">MPU Relocation</span><span class="rv">$2,000</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Roof</div>
+          <div class="rate-row"><span class="rk">Additional Array (over 3)</span><span class="rv">$300/ea</span></div>
+          <div class="rate-row"><span class="rk">Attic Run</span><span class="rv">$0.15/watt</span></div>
+          <div class="rate-row"><span class="rk">Flat Roof</span><span class="rv">$0.20/watt</span></div>
+          <div class="rate-row"><span class="rk">Metal Roof</span><span class="rv">$0.10/watt</span></div>
+          <div class="rate-row"><span class="rk">Steep Roof (over 32°)</span><span class="rv">$0.12/watt</span></div>
+          <div class="rate-row"><span class="rk">TPO Membrane</span><span class="rv">$0.25/watt</span></div>
+          <div class="rate-row"><span class="rk">Tilt Up (flat roof)</span><span class="rv">$100/panel</span></div>
+          <div class="rate-row"><span class="rk">Three Story Roof</span><span class="rv">$500</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Batteries</div>
+          <div class="rate-row"><span class="rk">Enphase 5P Non-Backup (1st)</span><span class="rv">$7,000</span></div>
+          <div class="rate-row"><span class="rk">Enphase 5P Non-Backup (add'l)</span><span class="rv">$5,500</span></div>
+          <div class="rate-row"><span class="rk">Enphase 5P Backup (1st)</span><span class="rv">$9,500</span></div>
+          <div class="rate-row"><span class="rk">Enphase 5P Backup (add'l)</span><span class="rv">$5,500</span></div>
+          <div class="rate-row"><span class="rk">Enphase 10C Backup (1st)</span><span class="rv">$13,500</span></div>
+          <div class="rate-row"><span class="rk">Enphase 10C Backup (add'l)</span><span class="rv">$9,000</span></div>
+          <div class="rate-row"><span class="rk">SolarEdge Non-Backup (1st)</span><span class="rv">$9,500</span></div>
+          <div class="rate-row"><span class="rk">SolarEdge Backup (1st)</span><span class="rv">$12,500</span></div>
+          <div class="rate-row"><span class="rk">Tesla PW3 (1st)</span><span class="rv">$13,000</span></div>
+          <div class="rate-row"><span class="rk">Tesla PW3 (add'l)</span><span class="rv">$10,000</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Sales Adders</div>
+          <div class="rate-row"><span class="rk">EV Charger + Install</span><span class="rv">$1,650</span></div>
+          <div class="rate-row"><span class="rk">HOA Support</span><span class="rv">$300</span></div>
+          <div class="rate-row"><span class="rk">Excessive AHJ/Utility Fees</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Remove Existing Solar</span><span class="rv">$150/panel</span></div>
+          <div class="rate-row"><span class="rk">Remove & Reinstall Solar</span><span class="rv">$400/panel</span></div>
+          <div class="rate-row"><span class="rk">Small System (under 4.4kW)</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Thermal Solar Removal</span><span class="rv">$1,500</span></div>
+          <div class="rate-row"><span class="rk">Cash/PACE Processing Fee</span><span class="rv">$799</span></div>
+          <div class="rate-row"><span class="rk">Ground Mount (16 panel min)</span><span class="rv">$1.25/watt</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Cancel / Change Order Fees</div>
+          <div class="rate-row"><span class="rk">Same Day Cancel/Reschedule</span><span class="rv high">$3,000</span></div>
+          <div class="rate-row"><span class="rk">Post Site Survey Cancel</span><span class="rv">$150</span></div>
+          <div class="rate-row"><span class="rk">Post SOW Cancel (pre-permit)</span><span class="rv">$600</span></div>
+          <div class="rate-row"><span class="rk">Post Permit Cancel</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Post SOW Change Order (pre-permit)</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Post Permit Change Order</span><span class="rv">$750</span></div>
+        </div>
+      </div>
+    </div>`;
+
+    // EXO — CA only
+    html += `
+    <div class="ppa-card" id="add-exo"><div class="ppa-hdr" onclick="togglePPA('add-exo')">
+      <div><div class="ppa-name">Exo</div><div style="font-size:11px;color:var(--dim);margin-top:2px;">California — Full adder list</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="background:rgba(191,90,242,.12);color:#BF5AF2;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA</span><span class="ppa-chev">›</span></div></div>
+      <div class="ppa-body">
+        <div class="rate-plan"><div class="rate-plan-name">Roof Adders</div>
+          <div class="rate-row"><span class="rk">Steep Roof (&gt;28°)</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Flat Roof (Unirac/EcoFasten)</span><span class="rv">$0.26/watt</span></div>
+          <div class="rate-row"><span class="rk">Chemlink Flat Roof</span><span class="rv">$0.55/watt</span></div>
+          <div class="rate-row"><span class="rk">Calpac (Metal Tile)</span><span class="rv">$0.40/watt</span></div>
+          <div class="rate-row"><span class="rk">Panel Tilt</span><span class="rv">$0.15/watt</span></div>
+          <div class="rate-row"><span class="rk">Ballast Mounts</span><span class="rv">$0.40/watt</span></div>
+          <div class="rate-row"><span class="rk">Attic Run</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Powerwash Roof</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Open Beam Ceiling</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Roofwork Advance</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Roofwork Advance (LightReach)</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Partial Flat / 5+ Mounting Planes</span><span class="rv">By Quote</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Electrical</div>
+          <div class="rate-row"><span class="rk">Main Panel Upgrade</span><span class="rv">$3,200</span></div>
+          <div class="rate-row"><span class="rk">Main Panel Relocation (&lt;10ft)</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">New Electric Sub Panel</span><span class="rv">$1,800</span></div>
+          <div class="rate-row"><span class="rk">Replace Electrical Sub Panel</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Derate</span><span class="rv">$650</span></div>
+          <div class="rate-row"><span class="rk">Line Side Tap</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Load Side Tap</span><span class="rv">$250</span></div>
+          <div class="rate-row"><span class="rk">Solar Combiner</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Sum of All Breakers</span><span class="rv">$2,400</span></div>
+          <div class="rate-row"><span class="rk">Non-CPUC Utility</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Smoke/Carbon Install Final</span><span class="rv">$350</span></div>
+          <div class="rate-row"><span class="rk">Wi-Fi Extender</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">In Line Filter</span><span class="rv">$500</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Single Panel Arrays</div>
+          <div class="rate-row"><span class="rk">1 Array</span><span class="rv">$200</span></div>
+          <div class="rate-row"><span class="rk">2 Arrays</span><span class="rv">$400</span></div>
+          <div class="rate-row"><span class="rk">3 Arrays</span><span class="rv">$600</span></div>
+          <div class="rate-row"><span class="rk">4 Arrays</span><span class="rv">$800</span></div>
+          <div class="rate-row"><span class="rk">5 Arrays</span><span class="rv">$1,000</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Batteries</div>
+          <div class="rate-row"><span class="rk">Battery Only Install</span><span class="rv">$2,500</span></div>
+          <div class="rate-row"><span class="rk">Battery Install 30ft+ from Panel</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Essential Load Backup (up to 6 breakers)</span><span class="rv">$5,000</span></div>
+          <div class="rate-row"><span class="rk">Complete Backup</span><span class="rv">$6,500</span></div>
+          <div class="rate-row"><span class="rk">Critical Loads + Generator & Transfer Switch</span><span class="rv">$3,500</span></div>
+          <div class="rate-row"><span class="rk">1 Powerwall 3</span><span class="rv">$10,500</span></div>
+          <div class="rate-row"><span class="rk">2 Powerwall 3</span><span class="rv">$19,200</span></div>
+          <div class="rate-row"><span class="rk">3 Powerwall 3</span><span class="rv">$27,900</span></div>
+          <div class="rate-row"><span class="rk">4 Powerwall 3</span><span class="rv">$36,900</span></div>
+          <div class="rate-row"><span class="rk">Enphase 5kWh (1×5P)</span><span class="rv">$5,550</span></div>
+          <div class="rate-row"><span class="rk">Enphase 10kWh (2×5P)</span><span class="rv">$9,800</span></div>
+          <div class="rate-row"><span class="rk">Enphase 15kWh (3×5P)</span><span class="rv">$14,550</span></div>
+          <div class="rate-row"><span class="rk">Enphase 20kWh (4×5P)</span><span class="rv">$19,600</span></div>
+          <div class="rate-row"><span class="rk">Enphase 10C w/Collar</span><span class="rv">$10,800</span></div>
+          <div class="rate-row"><span class="rk">Enphase 20C w/Collar</span><span class="rv">$18,600</span></div>
+          <div class="rate-row"><span class="rk">Enphase 30C w/Collar</span><span class="rv">$26,400</span></div>
+          <div class="rate-row"><span class="rk">Enphase 40C w/Collar</span><span class="rv">$34,200</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">System Size & Misc</div>
+          <div class="rate-row"><span class="rk">Small System &lt;2.8kW</span><span class="rv high">$2,000</span></div>
+          <div class="rate-row"><span class="rk">Small System 2.8–3.99kW</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Ground Mount (&gt;6kW)</span><span class="rv">$1.50/watt</span></div>
+          <div class="rate-row"><span class="rk">Equipment Inflation Adder</span><span class="rv">$0.12/watt</span></div>
+          <div class="rate-row"><span class="rk">Domestic Content</span><span class="rv">$0.25/watt</span></div>
+          <div class="rate-row"><span class="rk">EV Setup (within 5ft)</span><span class="rv">$650</span></div>
+          <div class="rate-row"><span class="rk">Manufactured Home</span><span class="rv">$250</span></div>
+          <div class="rate-row"><span class="rk">Multi-Family (3+ units)</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Stamped PE Letter</span><span class="rv">$350</span></div>
+          <div class="rate-row"><span class="rk">Stamped Engineering Plans</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">Geotechnical Report</span><span class="rv">$1,400</span></div>
+          <div class="rate-row"><span class="rk">Lien Fee</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Truck Roll</span><span class="rv">$150</span></div>
+          <div class="rate-row"><span class="rk">NEM MT</span><span class="rv">$1,000</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Cancel / Change Order Fees</div>
+          <div class="rate-row"><span class="rk">Post Install Design Change</span><span class="rv">$1,500</span></div>
+          <div class="rate-row"><span class="rk">Post Install Change Order</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Site Survey Rush</span><span class="rv">$200</span></div>
+          <div class="rate-row"><span class="rk">Site Survey Rescheduling Fee</span><span class="rv">$150</span></div>
+          <div class="rate-row"><span class="rk">Site Survey Cancellation Fee</span><span class="rv">$150</span></div>
+          <div class="rate-row"><span class="rk">Permitting/Final Inspection Concern</span><span class="rv">$400/panel</span></div>
+        </div>
+      </div>
+    </div>`;
+
+    // EMPOWER — CA only
+    html += `
+    <div class="ppa-card" id="add-empower"><div class="ppa-hdr" onclick="togglePPA('add-empower')">
+      <div><div class="ppa-name">Empower</div><div style="font-size:11px;color:var(--dim);margin-top:2px;">California — Full adder list</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="background:rgba(10,132,255,.12);color:#0A84FF;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;">CA</span><span class="ppa-chev">›</span></div></div>
+      <div class="ppa-body">
+        <div class="rate-plan"><div class="rate-plan-name">Electrical / Panel</div>
+          <div class="rate-row"><span class="rk">MPU – Standard (If Required)</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">MPU – Overhead (Standard)</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">MPU – Underground (like-for-like)</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">MPU – Overhead + Panel Relocate</span><span class="rv">$5,250</span></div>
+          <div class="rate-row"><span class="rk">MPU – Standard + Relocate</span><span class="rv">$5,250</span></div>
+          <div class="rate-row"><span class="rk">Main Panel Insert</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">MPI / Hi-Tie</span><span class="rv">$3,000</span></div>
+          <div class="rate-row"><span class="rk">Panel Relocation</span><span class="rv">$2,250</span></div>
+          <div class="rate-row"><span class="rk">Sub-Panel</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Derate</span><span class="rv">$925</span></div>
+          <div class="rate-row"><span class="rk">Busbar Verification</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Custom Dead Front</span><span class="rv">$925</span></div>
+          <div class="rate-row"><span class="rk">Non-standard Utility Interconnection</span><span class="rv">$600</span></div>
+          <div class="rate-row"><span class="rk">Consumption Monitoring (CTs)</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Tesla or Enphase Gateway/BLP Required</span><span class="rv">$2,500</span></div>
+          <div class="rate-row"><span class="rk">Trenching: Sidewalk</span><span class="rv">$300</span></div>
+          <div class="rate-row"><span class="rk">Trenching</span><span class="rv">Bid Only</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Retrofit Adders</div>
+          <div class="rate-row"><span class="rk">Battery Retrofit – CA</span><span class="rv">$2,000</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – 200A Disconnect</span><span class="rv">$550</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – Battery Pad</span><span class="rv">$350</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – Fused Disconnect</span><span class="rv">$100</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – H-Frame</span><span class="rv">$1,750</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – H-Frame for Subpanel</span><span class="rv">$1,400</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – I Frame</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – MSP to Disconnect (20–49ft)</span><span class="rv">$400</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – MSP to Disconnect (50–99ft)</span><span class="rv">$850</span></div>
+          <div class="rate-row"><span class="rk">Retrofit – MSP to Disconnect (100–149ft)</span><span class="rv">$1,700</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Roof Adders</div>
+          <div class="rate-row"><span class="rk">Tile</span><span class="rv">$0.05/W</span></div>
+          <div class="rate-row"><span class="rk">Lightweight Tile (per section)</span><span class="rv">$0.35/W</span></div>
+          <div class="rate-row"><span class="rk">Metal Roof</span><span class="rv">$0.15/W</span></div>
+          <div class="rate-row"><span class="rk">Metal Rafter Mounts</span><span class="rv">$0.35/W</span></div>
+          <div class="rate-row"><span class="rk">Attic Run</span><span class="rv">$0.06/W</span></div>
+          <div class="rate-row"><span class="rk">Lathe & Stucco</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Solar Heater Removal</span><span class="rv">Bid Only</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Batteries & Backup</div>
+          <div class="rate-row"><span class="rk">Battery Backup</span><span class="rv">$5,000</span></div>
+          <div class="rate-row"><span class="rk">Enphase & Tesla Combo</span><span class="rv">$3,500</span></div>
+          <div class="rate-row"><span class="rk">Bollard</span><span class="rv">$450</span></div>
+          <div class="rate-row"><span class="rk">Generac 22kW</span><span class="rv">$15,500</span></div>
+          <div class="rate-row"><span class="rk">Solar Insure</span><span class="rv">$0.10/W</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Ground Mount</div>
+          <div class="rate-row"><span class="rk">Ground Mount &lt;10kW</span><span class="rv">$9,500</span></div>
+          <div class="rate-row"><span class="rk">Ground Mount (10kW+)</span><span class="rv">$0.95/W</span></div>
+          <div class="rate-row"><span class="rk">Ground Mount (2 Arrays)</span><span class="rv">$1.50/W</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Travel Adders</div>
+          <div class="rate-row"><span class="rk">Travel (Short)</span><span class="rv">$0.05/W</span></div>
+          <div class="rate-row"><span class="rk">Travel (Medium)</span><span class="rv">$0.10/W</span></div>
+          <div class="rate-row"><span class="rk">Travel (Long)</span><span class="rv">$0.15/W</span></div>
+          <div class="rate-row"><span class="rk">Travel (Longest)</span><span class="rv">$0.25/W</span></div>
+          <div class="rate-row"><span class="rk">Coastal Travel</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">NorCal Coastal Travel</span><span class="rv">$1,500</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Specialty / Misc</div>
+          <div class="rate-row"><span class="rk">Add-on / Non-Export PTO</span><span class="rv">$675</span></div>
+          <div class="rate-row"><span class="rk">HOA Applications</span><span class="rv">$300</span></div>
+          <div class="rate-row"><span class="rk">Mobile/Manufactured Home</span><span class="rv">$0.20/W</span></div>
+          <div class="rate-row"><span class="rk">Small System (8–10 panels)</span><span class="rv">$1,500</span></div>
+          <div class="rate-row"><span class="rk">Orphan Panel</span><span class="rv">$500</span></div>
+          <div class="rate-row"><span class="rk">Critter Guard</span><span class="rv">$0.15/W</span></div>
+          <div class="rate-row"><span class="rk">Cell Card</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Engineer Stamp</span><span class="rv">$275</span></div>
+          <div class="rate-row"><span class="rk">Lien Fee</span><span class="rv">$1,000</span></div>
+          <div class="rate-row"><span class="rk">Title Pull</span><span class="rv">$35</span></div>
+          <div class="rate-row"><span class="rk">EV Ready (50 Amp 240v)</span><span class="rv">$1,800</span></div>
+          <div class="rate-row"><span class="rk">HVAC Tune-up Package</span><span class="rv">$250 / $600</span></div>
+        </div>
+        <div class="rate-plan" style="margin-top:10px;"><div class="rate-plan-name">Change Order / Cancel Fees</div>
+          <div class="rate-row"><span class="rk">Post Permit Change Order/Resign</span><span class="rv">$750</span></div>
+          <div class="rate-row"><span class="rk">Post Install Scheduling Change Order/Resign</span><span class="rv high">$1,500</span></div>
+          <div class="rate-row"><span class="rk">Cancel Saved</span><span class="rv">$0.20/W</span></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if (!html) {
+    html = `<div class="coming-soon"><div class="cs-icon">⚡</div><div class="cs-title">No adder sheets for this region yet</div><div class="cs-sub">Check back soon</div></div>`;
+  }
+
+  document.getElementById('adders-body').innerHTML = html;
+}
+
+
+// Format: [city, state, warehouse, eta, solarapp]
+const AHJ_DATA = [
+  // SOCAL / CERRITOS
+  ['Newport Beach','CA','SoCal','Over the Counter','Yes'],
+  ['Pasadena','CA','SoCal','Over the Counter','No'],
+  ['Yucca Valley','CA','SoCal','0–15 Days','Yes'],
+  ['San Marcos','CA','SoCal','0–15 Days','Yes'],
+  ['San Jacinto','CA','SoCal','0–15 Days','Yes'],
+  ['San Diego County','CA','SoCal','0–15 Days','No'],
+  ['San Diego','CA','SoCal','0–15 Days','No'],
+  ['Westminster','CA','SoCal','5–10 Days','Yes'],
+  ['Simi Valley','CA','SoCal','5–10 Days','Yes'],
+  ['Santee','CA','SoCal','5–10 Days','Yes'],
+  ['Redlands','CA','SoCal','5–10 Days','Yes'],
+  ['Oceanside','CA','SoCal','5–10 Days','Yes'],
+  ['Moreno Valley','CA','SoCal','5–10 Days','Yes'],
+  ['Lemon Grove','CA','SoCal','5–10 Days','Yes'],
+  ['El Segundo','CA','SoCal','5–10 Days','Yes'],
+  ['Cypress','CA','SoCal','5–10 Days','Yes'],
+  ['Coronado','CA','SoCal','5–10 Days','Yes'],
+  ['Arcadia','CA','SoCal','5–10 Days','Yes'],
+  ['San Bernardino','CA','SoCal','5–10 Days','No'],
+  ['Placentia','CA','SoCal','5–10 Days','No'],
+  ['Perris','CA','SoCal','5–10 Days','No'],
+  ['Lake Elsinore','CA','SoCal','5–10 Days','No'],
+  ['Grand Terrace','CA','SoCal','5–10 Days','No'],
+  ['Yorba Linda','CA','SoCal','10–20 Days','Yes'],
+  ['Tustin','CA','SoCal','10–20 Days','Yes'],
+  ['Rancho Santa Margarita','CA','SoCal','10–20 Days','Yes'],
+  ['Rancho Cucamonga','CA','SoCal','10–20 Days','Yes'],
+  ['Pico Rivera','CA','SoCal','10–20 Days','Yes'],
+  ['Murrieta','CA','SoCal','10–20 Days','Yes'],
+  ['Moorpark','CA','SoCal','10–20 Days','Yes'],
+  ['La Verne','CA','SoCal','10–20 Days','Yes'],
+  ['La Quinta','CA','SoCal','10–20 Days','Yes'],
+  ['Highland','CA','SoCal','10–20 Days','Yes'],
+  ['Fontana','CA','SoCal','10–20 Days','Yes'],
+  ['El Centro','CA','SoCal','10–20 Days','Yes'],
+  ['El Cajon','CA','SoCal','10–20 Days','Yes'],
+  ['Duarte','CA','SoCal','10–20 Days','Yes'],
+  ['Chula Vista','CA','SoCal','10–20 Days','Yes'],
+  ['Beverly Hills','CA','SoCal','10–20 Days','Yes'],
+  ['Apple Valley','CA','SoCal','10–20 Days','Yes'],
+  ['Lancaster','CA','SoCal','10–20 Days','No'],
+  ['Orange','CA','SoCal','10–20 Days','No'],
+  ['Corona','CA','SoCal','10–20 Days','No'],
+  ['Anaheim','CA','SoCal','10–20 Days','No'],
+  ['Victorville','CA','SoCal','20–30 Days','Yes'],
+  ['Temecula','CA','SoCal','20–30 Days','Yes'],
+  ['Santa Ana','CA','SoCal','20–30 Days','Yes'],
+  ['San Bernardino County','CA','SoCal','20–30 Days','Yes'],
+  ['Palmdale','CA','SoCal','20–30 Days','Yes'],
+  ['Norwalk','CA','SoCal','20–30 Days','Yes'],
+  ['Menifee','CA','SoCal','20–30 Days','Yes'],
+  ['Indio','CA','SoCal','20–30 Days','Yes'],
+  ['Huntington Beach','CA','SoCal','20–30 Days','Yes'],
+  ['Hesperia','CA','SoCal','20–30 Days','Yes'],
+  ['Hemet','CA','SoCal','20–30 Days','Yes'],
+  ['Fullerton','CA','SoCal','20–30 Days','Yes'],
+  ['Escondido','CA','SoCal','20–30 Days','Yes'],
+  ['Eastvale','CA','SoCal','20–30 Days','Yes'],
+  ['Downey','CA','SoCal','20–30 Days','Yes'],
+  ['Desert Hot Springs','CA','SoCal','20–30 Days','Yes'],
+  ['Chino Hills','CA','SoCal','20–30 Days','Yes'],
+  ['Chino','CA','SoCal','20–30 Days','Yes'],
+  ['Cathedral City','CA','SoCal','20–30 Days','Yes'],
+  ['Carson','CA','SoCal','20–30 Days','Yes'],
+  ['Carlsbad','CA','SoCal','20–30 Days','Yes'],
+  ['Los Angeles','CA','SoCal','20–30 Days','No'],
+  ['Long Beach','CA','SoCal','20–30 Days','No'],
+  ['Irvine','CA','SoCal','20–30 Days','No'],
+  ['Santa Clarita','CA','SoCal','20–30 Days','No'],
+  ['Ontario','CA','SoCal','20–30 Days','No'],
+  ['Thousand Oaks','CA','SoCal','30–45 Days','Yes'],
+  ['Orange County','CA','SoCal','30–45 Days','Yes'],
+  ['Oxnard','CA','SoCal','30–45 Days','Yes'],
+  ['Rialto','CA','SoCal','30–45 Days','Yes'],
+  ['Pomona','CA','SoCal','30–45 Days','Yes'],
+  ['Mission Viejo','CA','SoCal','30–45 Days','Yes'],
+  ['Diamond Bar','CA','SoCal','30–45 Days','Yes'],
+  ['Riverside County','CA','SoCal','75–90 Days','Yes'],
+  ['Los Angeles County','CA','SoCal','30–45 Days','No'],
+  // NOCAL / SACRAMENTO
+  ['San Jose','CA','NorCal','Over the Counter','No'],
+  ['Napa','CA','NorCal','Over the Counter','No'],
+  ['Marin County','CA','NorCal','Over the Counter','No'],
+  ['Redwood City','CA','NorCal','Over the Counter','Yes'],
+  ['Martinez','CA','NorCal','Over the Counter','Yes'],
+  ['West Sacramento','CA','NorCal','0–15 Days','Yes'],
+  ['Sunnyvale','CA','NorCal','0–15 Days','Yes'],
+  ['Alameda County','CA','NorCal','5–10 Days','No'],
+  ['Roseville','CA','NorCal','5–10 Days','Yes'],
+  ['Richmond','CA','NorCal','5–10 Days','Yes'],
+  ['Pleasant Hill','CA','NorCal','5–10 Days','Yes'],
+  ['Dublin','CA','NorCal','5–10 Days','Yes'],
+  ['Citrus Heights','CA','NorCal','5–10 Days','Yes'],
+  ['Vacaville','CA','NorCal','10–20 Days','No'],
+  ['San Rafael','CA','NorCal','10–20 Days','No'],
+  ['Pittsburg','CA','NorCal','10–20 Days','No'],
+  ['Chico','CA','NorCal','10–20 Days','No'],
+  ['Belmont','CA','NorCal','10–20 Days','No'],
+  ['Tracy','CA','NorCal','10–20 Days','Yes'],
+  ['Stockton','CA','NorCal','10–20 Days','Yes'],
+  ['Sacramento','CA','NorCal','10–20 Days','Yes'],
+  ['Sacramento County','CA','NorCal','10–20 Days','Yes'],
+  ['Petaluma','CA','NorCal','10–20 Days','Yes'],
+  ['Oakland','CA','NorCal','20–30 Days','Yes'],
+  ['Fremont','CA','NorCal','20–30 Days','Yes'],
+  ['Hayward','CA','NorCal','20–30 Days','Yes'],
+  ['Pleasanton','CA','NorCal','20–30 Days','Yes'],
+  ['Concord','CA','NorCal','10–20 Days','Yes'],
+  ['Santa Rosa','CA','NorCal','20–30 Days','Yes'],
+  ['San Ramon','CA','NorCal','20–30 Days','Yes'],
+  ['San Mateo','CA','NorCal','20–30 Days','Yes'],
+  ['San Francisco','CA','NorCal','20–30 Days','Yes'],
+  ['Fairfield','CA','NorCal','20–30 Days','Yes'],
+  ['Elk Grove','CA','NorCal','20–30 Days','Yes'],
+  ['Danville','CA','NorCal','20–30 Days','Yes'],
+  ['Antioch','CA','NorCal','20–30 Days','Yes'],
+  ['Vallejo','CA','NorCal','20–30 Days','No'],
+  ['Novato','CA','NorCal','30–45 Days','Yes'],
+  ['Mountain View','CA','NorCal','30–45 Days','Yes'],
+  ['Milpitas','CA','NorCal','30–45 Days','Yes'],
+  ['Contra Costa County','CA','NorCal','30–45 Days','Yes'],
+  ['Berkeley','CA','NorCal','30–45 Days','Yes'],
+  ['San Leandro','CA','NorCal','30–45 Days','Yes'],
+  ['Palo Alto','CA','NorCal','30–45 Days','Yes'],
+  ['Newark','CA','NorCal','30–45 Days','Yes'],
+  // FLORIDA / LAKELAND
+  ['Hillsborough County','FL','Florida','Over the Counter','Yes'],
+  ['Polk County','FL','Florida','Over the Counter','Yes'],
+  ['Tampa','FL','Florida','Over the Counter','Yes'],
+  ['Orange County','FL','Florida','5–10 Days','Yes'],
+  ['Osceola County','FL','Florida','5–10 Days','Yes'],
+  ['Orlando','FL','Florida','5–10 Days','Yes'],
+  ['Palm Bay','FL','Florida','5–10 Days','No'],
+  ['Port St. Lucie','FL','Florida','5–10 Days','No'],
+  ['Largo','FL','Florida','5–10 Days','No'],
+  ['St. Petersburg','FL','Florida','10–20 Days','No'],
+  ['Marion County','FL','Florida','10–20 Days','No'],
+  ['Clearwater','FL','Florida','10–20 Days','No'],
+  ['Highlands County','FL','Florida','10–20 Days','No'],
+  ['St. Cloud','FL','Florida','10–20 Days','No'],
+  ['Cape Coral','FL','Florida','20–30 Days','Yes'],
+  ['Fort Myers','FL','Florida','20–30 Days','Yes'],
+  ['Gainesville','FL','Florida','20–30 Days','Yes'],
+  ['Pinellas County','FL','Florida','20–30 Days','Yes'],
+  ['Pasco County','FL','Florida','20–30 Days','No'],
+  ['Kissimmee','FL','Florida','20–30 Days','No'],
+  ['Lee County','FL','Florida','30–45 Days','Yes'],
+  ['Hernando County','FL','Florida','30–45 Days','No'],
+  ['Haines City','FL','Florida','30–45 Days','No'],
+];
+
+function etaColor(eta) {
+  if (eta.includes('Over') || eta.includes('0–15') || eta.includes('Instant')) return '#30D158';
+  if (eta.includes('5–10') || eta.includes('10–20')) return '#F5A623';
+  if (eta.includes('20–30')) return '#0A84FF';
+  return '#FF3B30';
+}
+
+function renderAHJ(filter='') {
+  const rd = REGIONS[currentRegion];
+  document.getElementById('ahj-region-name').textContent = rd.name;
+
+  const warehouseMap = { socal:'SoCal', nocal:'NorCal', florida:'Florida', pr:'Florida' };
+  const wh = warehouseMap[currentRegion];
+
+  let data = AHJ_DATA.filter(r => r[2] === wh);
+  if (filter) {
+    const f = filter.toLowerCase();
+    data = data.filter(r => r[0].toLowerCase().includes(f));
+  }
+
+  if (!data.length) {
+    document.getElementById('ahj-list').innerHTML = `<div class="coming-soon"><div class="cs-icon">🏛️</div><div class="cs-title">No results found</div><div class="cs-sub">Try a different city name</div></div>`;
+    return;
+  }
+
+  // Group by ETA bucket
+  const buckets = {};
+  data.forEach(r => {
+    const key = r[3];
+    if (!buckets[key]) buckets[key] = [];
+    buckets[key].push(r);
+  });
+
+  const order = ['Over the Counter','0–15 Days','5–10 Days','10–20 Days','20–30 Days','30–45 Days','75–90 Days'];
+  let html = '';
+
+  order.forEach(bucket => {
+    if (!buckets[bucket]) return;
+    const color = etaColor(bucket);
+    html += `<div style="font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:${color};padding:12px 0 8px;display:flex;align-items:center;gap:8px;">${bucket}<span style="flex:1;height:1px;background:var(--border);display:block;"></span></div>`;
+    html += `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px;">`;
+    buckets[bucket].forEach(r => {
+      const [city, state, , eta, app] = r;
+      html += `
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#fff;">${city}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:2px;">${state} · SolarAPP: <span style="color:${app==='Yes'?'#30D158':'#FF3B30'};font-weight:700;">${app}</span></div>
+          </div>
+          <div style="background:${color}22;border:1px solid ${color}55;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:${color};white-space:nowrap;">${eta}</div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+
+  document.getElementById('ahj-list').innerHTML = html;
+}
+
+function filterAHJ() {
+  const q = document.getElementById('ahj-search').value;
+  renderAHJ(q);
+}
+
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(()=>document.getElementById('splash').style.display='none',500);
+  },1800);
+  renderRates();
+  renderTestimonials();
+  renderPhones();
+  renderAHJ();
+  renderAdders();
+  renderAdvisorList();
+});
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
